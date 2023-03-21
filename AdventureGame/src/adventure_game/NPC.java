@@ -35,7 +35,7 @@ public class NPC extends Character{
         int i;
         for (i = 0; i < this.level; ++i){
             int damageModif = (int) (this.baseDamage * 0.1);
-            int healthModif = (int) (this.getHealth() * 0.1);
+            int healthModif = (int) (this.getHealth() * 0.25);
             this.maxHealth += healthModif;
             this.modifyDamage(damageModif);
             this.modifyHealth(this.maxHealth);

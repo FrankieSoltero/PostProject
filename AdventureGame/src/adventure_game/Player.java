@@ -107,9 +107,9 @@ public class Player extends Character{
             System.out.printf("You have leveled up. you are now level %s\nYour health is %s\nYour damage is %s\n",this.level,this.getHealth(),this.baseDamage);
         }
         else {
-            int damageTotal = (int) (this.baseDamage * (0.2));
+            int damageTotal = (int) (this.baseDamage * (0.1));
             this.modifyDamage(damageTotal);
-            int healthTotal = (int) (this.maxHealth * (0.4));
+            int healthTotal = (int) (this.maxHealth * (0.25));
             this.maxHealth += healthTotal;
             this.modifyHealth(this.maxHealth);
             System.out.printf("You have leveled up. you are now level %s\nYour health is %s\nYour damage is %s\n",this.level,this.getHealth(),this.baseDamage);

@@ -44,6 +44,7 @@ public class Game {
 
         int choice = 0;
         Room currentRoom = roomMap.get(0);
+        System.out.printf("General Should Knows:\nYou can only carry 10 items at a time\nWeapons are automatically picked up as are items\nNPCS level randomly generate for each one\nTyping in a character for a direction will kill the game\nTheres an easter egg in create player\nDefending only stops damage for that turn. The NPC is then vulnerable for the next turn but can still hit you\nA message will pop up telling you if theres another zombie in the room.\nHappy Fighting survivor.\n\n\n");
 
         System.out.printf("It is a cold day in 2040. My name is %S. Its been 20 years since the zombie apocalypse, it all began when covid had it's boom the \ndoctor got the symptoms very wrong. It was originally reported as a mild to severe cold, but then came its mutation. Suddenly people began to get agressive, then hungry, finally came the zombies. First it was so far everything seemed fine, 2 years later the world was nothing \nbut a wasteland where the survivors are greatly outnumbered. 20 years later, here I am where the last reported \ngovernment found a cure but was sadly overrun with zombies. I am the worlds only hope.\n",Game.player.getName());
         System.out.printf("You are at %s\n%s",currentRoom.getRoomName(),currentRoom.getRoomBio());
@@ -299,6 +300,7 @@ public class Game {
             Game.player.takeTurn(opponent);
             if(!opponent.isAlive()){
                 System.out.printf("%S has been killed.\n",opponent.getName());
+                
                 Game.player.levelModifier();
                 break;
             }
@@ -442,28 +444,28 @@ public class Game {
     public void createNPCS(){
         int level = Game.rand.nextInt(15);
         NPC Walker = new NPC("Walker",100,level,15);
-        level = Game.rand.nextInt(15);
+        level = Game.rand.nextInt(10)+1;
         NPC Walker2 = new NPC("Walker",100,level,15);
-        level = Game.rand.nextInt(15);
+        level = Game.rand.nextInt(10)+1;
         NPC Walker3 = new NPC("Walker",100,level,15);
-        level = Game.rand.nextInt(15);
+        level = Game.rand.nextInt(10)+1;
         NPC Walker4 = new NPC("Walker",100,level,15);
-        level = Game.rand.nextInt(15);
+        level = Game.rand.nextInt(10)+1;
         NPC Walker5 = new NPC("Walker",100,level,15);
-        level = Game.rand.nextInt(15);
-        NPC Creeper = new NPC("Creeper",250,level,20);
-        level = Game.rand.nextInt(15);
-        NPC Creeper2 = new NPC("Creeper",250,level,20);
-        level = Game.rand.nextInt(15);
-        NPC Creeper3 = new NPC("Creeper",250,level,20);
-        level = Game.rand.nextInt(15);
-        NPC Creeper4 = new NPC("Creeper",250,level,20);
-        level = Game.rand.nextInt(15);
-        NPC Sprinter = new NPC("Sprinter", 500, level, 10);
-        level = Game.rand.nextInt(15);
-        NPC Sprinter2 = new NPC("Sprinter", 500, level, 10);
-        level = Game.rand.nextInt(15);
-        NPC Sprinter3 = new NPC("Sprinter", 500, level, 10);
+        level = Game.rand.nextInt(10)+1;
+        NPC Creeper = new NPC("Creeper",250,level,18);
+        level = Game.rand.nextInt(10)+1;
+        NPC Creeper2 = new NPC("Creeper",250,level,18);
+        level = Game.rand.nextInt(10)+1;
+        NPC Creeper3 = new NPC("Creeper",250,level,18);
+        level = Game.rand.nextInt(10)+1;
+        NPC Creeper4 = new NPC("Creeper",250,level,18);
+        level = Game.rand.nextInt(5)+1;
+        NPC Sprinter = new NPC("Sprinter", 500, level, 25);
+        level = Game.rand.nextInt(5)+1;
+        NPC Sprinter2 = new NPC("Sprinter", 500, level, 25);
+        level = Game.rand.nextInt(5)+1;
+        NPC Sprinter3 = new NPC("Sprinter", 500, level, 25);
         NPC HiveMind = new NPC("HiveMind",1000,6,70);
         NPC Faucci = new NPC("Faucci",20000,20,150);
         NPC ZombieNest = new NPC("Zombie Nest",5000,10,80);
@@ -495,21 +497,19 @@ public class Game {
     public void createItems() {
         Knife knife = new Knife();
         Knife knife2 = new Knife();
-        bandage bandage = new bandage();
         Pistols pistol = new Pistols();
         Pistols pistol2 = new Pistols();
         antiBiotics antis = new antiBiotics();
         antiBiotics antis2 = new antiBiotics();
         antiBiotics antis3 = new antiBiotics();
         AssaultRifle AR = new AssaultRifle();
-        Items.add(bandage);
         Items.add(antis);
         Items.add(antis2);
         Items.add(antis3);
         weapons.add(knife);
         weapons.add(knife2);
         weapons.add(pistol);
-        weapons.add(AR);
         weapons.add(pistol2);
+        weapons.add(AR);
     }
 }

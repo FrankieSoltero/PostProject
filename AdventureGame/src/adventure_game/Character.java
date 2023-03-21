@@ -284,7 +284,13 @@ abstract public class Character{
      */
 
     public void obtain(Consumable item){
-        items.add(item);
+        if (items.size() >= 10){
+            System.out.printf("You can only have 10 items at a time");
+            
+        }
+        else {
+            items.add(item);
+        }
     }
     /**
      * Uses an item when wanted
