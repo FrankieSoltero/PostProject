@@ -1,14 +1,4 @@
-# CMPS 1600  Project 01
-
-In this project, you will continue the implementation of our text-based adventure game
-
-To complete this lab, follow the instructions in [project-01.md](project-01.md) ([PDF version](project-01.pdf)). 
-
-## Turning in your work
-- Put your name at the top of `Game.java`.
-- Once you have pushed your final submission to GitHub, go to Canvas and submit a link to your repository to the Canvas assignment for this lab. 
-
-# Your Custom Features
+# Custom Features
 - I have edited the mana function to become a level up function that will allow for xp to be given after every fight
 - When a character levels up health and damage increase by 10 percent.
 - I added an easter egg that when a player is prompted to create their character and enter 420 as their health they get 4200 health and are allowed to allocate 20 points to damage.
