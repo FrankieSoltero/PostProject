@@ -1,14 +1,4 @@
-# CMPS 1600  Project 01
-
-In this project, you will continue the implementation of our text-based adventure game
-
-To complete this lab, follow the instructions in [project-01.md](project-01.md) ([PDF version](project-01.pdf)). 
-
-## Turning in your work
-- Put your name at the top of `Game.java`.
-- Once you have pushed your final submission to GitHub, go to Canvas and submit a link to your repository to the Canvas assignment for this lab. 
-
-# Your Custom Features
+# Custom Features
 - I have edited the mana function to become a level up function that will allow for xp to be given after every fight
 - When a character levels up health and damage increase by 10 percent.
 - I added an easter egg that when a player is prompted to create their character and enter 420 as their health they get 4200 health and are allowed to allocate 20 points to damage.
@@ -18,3 +8,7 @@ To complete this lab, follow the instructions in [project-01.md](project-01.md) 
 - There will only be about 5-10 weapons throughout the whole map
 Document your custom features here:
 Instead of doing spells and a mana function I am doing leveling, bandage creation, use of itmes while not in combat, and an easter egg which when input 420 for health a Joint is smoked and the characters health is set 4200. The NPCS spawn randomly through out the map and the Boss NPC and Cure are only in room 10.
+# Acknowledgements
+
+Thank you to Ted Holmberg for inspiration, ideas, and mechanics which have ended up in this project.
+Thank you to my Computer Science teacher Arron Maus for providing the project, in which I have transformed into a Zombie adventure game.
