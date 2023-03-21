@@ -392,7 +392,7 @@ public class Game {
         int choice = in.nextInt();
         switch(choice) {
             case 1:
-                this.readMap("project-01-adventure-game-FrankieSoltero/data/levels/The-Hospital.txt");
+                this.readMap("AdventureGame/data/levels/The-Hospital.txt");
                 int i;
                 for (i = 1; i < 10; ++i){
                     roomMap.get(i).setNPC();
