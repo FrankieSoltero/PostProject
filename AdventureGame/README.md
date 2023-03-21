@@ -8,3 +8,6 @@
 - There will only be about 5-10 weapons throughout the whole map
 Document your custom features here:
 Instead of doing spells and a mana function I am doing leveling, bandage creation, use of itmes while not in combat, and an easter egg which when input 420 for health a Joint is smoked and the characters health is set 4200. The NPCS spawn randomly through out the map and the Boss NPC and Cure are only in room 10.
+# Acknowledgements
+
+Thank you to Ted Holmberg for inspiration, ideas, and mechanics which have ended up in this project.
