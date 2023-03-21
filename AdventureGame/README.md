@@ -11,3 +11,4 @@ Instead of doing spells and a mana function I am doing leveling, bandage creatio
 # Acknowledgements
 
 Thank you to Ted Holmberg for inspiration, ideas, and mechanics which have ended up in this project.
+Thank you to my Computer Science teacher Arron Maus for providing the project, in which I have transformed into a Zombie adventure game.
