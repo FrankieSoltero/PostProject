@@ -8,6 +8,7 @@ package adventure_game;
  */
 
 import java.util.Scanner;
+import javax.swing.JTextArea;
 
 import adventure_game.items.antiBiotics;
 import adventure_game.items.bandage;
@@ -27,12 +28,13 @@ public class Game {
     static Scanner in = new Scanner(System.in);
     public static Random rand = new Random();
     private static Player player;
+    private JTextArea outputTextArea;
     static ArrayList<Room> roomMap = new ArrayList<>();
     public static ArrayList<NPC> NPCS = new ArrayList<>();
     public static ArrayList<Consumable> Items = new ArrayList<>();
     public static ArrayList<Weapons> weapons = new ArrayList<>();
     
-    public static void main(String[] args) throws FileNotFoundException{
+    public static void AdventureGameCreator() throws FileNotFoundException{
         Game game = new Game();
         game.createNPCS();
         game.createItems();
@@ -226,19 +228,20 @@ public class Game {
         String name;
         int health;
         int damage;
-        int totalPoints = 20;
+        int totalPoints = 25;
         int pointsUsed;
         
 
         while (totalPoints > 0) {
             System.out.println("What is your name survivor? ");
             name = Game.in.next();
-            System.out.println(name + ", you have 20 points to give yourself, 1 point is 10 health points, 5 damage points, and you start at level 0");
+            System.out.println(name + ", you have 25 points to give yourself, 1 point is 10 health points, 5 damage points, and you start at level 0");
             pointsUsed = 0;
             System.out.println("How many points would you like to put in health?");
             health = Game.in.nextInt();
-            pointsUsed = health;
-            if (pointsUsed == 20) {
+            pointsUsed = health
+            ;
+            if (pointsUsed == 25) {
                 totalPoints -= pointsUsed;
                 health = 10 * health;
                 player = new Player(name, health,0,0);
@@ -269,7 +272,7 @@ public class Game {
                 System.out.printf("You have %S points left. How many points would you like to put into damage? ",totalPoints);
                 damage = Game.in.nextInt();
                 pointsUsed += damage;
-                if (pointsUsed == 20) {
+                if (pointsUsed == 25) {
                     damage = 5 * damage;
                     player = new Player(name, health, 0,damage);
                     totalPoints -= pointsUsed;
@@ -394,7 +397,7 @@ public class Game {
         int choice = in.nextInt();
         switch(choice) {
             case 1:
-                this.readMap("AdventureGame/data/levels/The-Hospital.txt");
+                this.readMap("AdventureGame/data/levels/Hospital Map/The-Hospital.txt");
                 int i;
                 for (i = 1; i < 10; ++i){
                     roomMap.get(i).setNPC();
@@ -512,4 +515,16 @@ public class Game {
         weapons.add(pistol2);
         weapons.add(AR);
     }
+    public void setOutputTextArea(JTextArea string){
+        this.outputTextArea = string;
+    }
+    private void appendToOutput(String text) {
+        if (outputTextArea != null) {
+            outputTextArea.append(text);
+            outputTextArea.append("\n");
+        } else {
+            System.out.println(text);
+        }
+    }
+    
 }
