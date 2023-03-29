@@ -74,7 +74,7 @@ public class GameWindow extends JFrame {
                 JScrollPane scroll = new JScrollPane(outputTextArea);
                 gameFrame.add(scroll);
                 gameFrame.pack();
-                gameFrame.setVisible(true);
+                gameFrame.setVisible(false);
                 try {
                     Game.AdventureGameCreator(outputTextArea);
                 } catch (FileNotFoundException e1) {
