@@ -34,7 +34,7 @@ public class Game {
     public static ArrayList<Consumable> Items = new ArrayList<>();
     public static ArrayList<Weapons> weapons = new ArrayList<>();
     
-    public static void AdventureGameCreator() throws FileNotFoundException{
+    public static void AdventureGameCreator(JTextArea textArea) throws FileNotFoundException{
         Game game = new Game();
         game.createNPCS();
         game.createItems();
