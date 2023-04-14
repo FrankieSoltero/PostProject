@@ -23,35 +23,25 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
 public class GameWindow extends JFrame {
+    private JButton newGame;
+    private JButton loadGame;
+    private JPanel buttonPanel;
+    private JPanel mainP;
+    private CardLayout cardLayout;
+    private JPanel contentPanel;
+    
+    
     public GameWindow(){
-        JButton newGame;
-        JButton loadGame;
-        JPanel buttonPanel;
-        JPanel contentP;
+        
+
 
 
 
        setTitle("Covid, The Zombie Apocalypse");
-       // set background image
-       contentP = new JPanel() {
 
-            BufferedImage image;
-            {
-            try {
-                image = ImageIO.read(new File("AdventureGame/data/levels/Hospital Map/DownStairsHall.png"));
-            }
-             catch (IOException e) {
-                e.printStackTrace();
-            }
-            }
-            @Override
-            protected void paintComponent(Graphics graphics) {
-                super.paintComponent(graphics);
-                graphics.drawImage(image, 0,0,getWidth(),getHeight(),this);
-            }
-        };
-        setContentPane(contentP);
-
+       contentPanel = new JPanel();
+       cardLayout = new CardLayout();
+       contentPanel.setLayout(cardLayout);
         
        // sets a new button panel that will allow the buttons
        // to move with the adjusted size of Game window.
@@ -68,21 +58,17 @@ public class GameWindow extends JFrame {
        newGame.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e){
-                JFrame gameFrame = new JFrame("Covid Zombie Apocalypse");
-                JTextArea outputTextArea = new JTextArea(20,40);
-                outputTextArea.setEditable(false);
-                JScrollPane scroll = new JScrollPane(outputTextArea);
-                gameFrame.add(scroll);
-                gameFrame.pack();
-                gameFrame.setVisible(false);
+                cardLayout.show(contentPanel, "gamePanel");
                 try {
-                    Game.AdventureGameCreator(outputTextArea);
+                    Game.AdventureGameCreator(null);
                 } catch (FileNotFoundException e1) {
                     // TODO Auto-generated catch block
                     e1.printStackTrace();
                 }
             }
        });
+       
+
        loadGame = new JButton("Load Game");
 
        constraints.gridx = 0;
@@ -95,8 +81,6 @@ public class GameWindow extends JFrame {
        
        buttonPanel.add(loadGame, constraints);
 
-       contentP.add(buttonPanel, BorderLayout.CENTER);
-
        
        setVisible(true);
 
@@ -108,5 +92,6 @@ public class GameWindow extends JFrame {
     
     public static void main(String[] args) throws FileNotFoundException{
         new GameWindow();
+        Game.AdventureGameCreator(null);
     }
 }
