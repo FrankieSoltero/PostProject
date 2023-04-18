@@ -25,6 +25,7 @@ import java.util.Random;
  * This is the class that creates the Adventure Game
  */
 public class Game {
+    public static int gameEnded = 1;
     static Scanner in = new Scanner(System.in);
     public static Random rand = new Random();
     private static Player player;
@@ -526,5 +527,6 @@ public class Game {
             System.out.println(text);
         }
     }
+    
     
 }
