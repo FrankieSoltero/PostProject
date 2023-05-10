@@ -6,11 +6,16 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Scanner;
+
 import javax.imageio.ImageIO;
 
 import javax.swing.JButton;
@@ -19,6 +24,7 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -38,11 +44,18 @@ public class GameWindow extends JFrame {
     private JButton button6;
     private JButton newGame;
     private JButton loadGame;
+    private Room currentRoom;
+    private Room room;
+    private Game game = new Game();
+    private ArrayList<Room> roomMap = new ArrayList<>();
+    static StringInput strInput;
+    
     
     
     public GameWindow(){
         super("Covid, The Zombie Apocalypse");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        strInput = new StringInput("null");
 
         //Lines 47-62 Create the Image background then apply it to the starter GameWindow
         JPanel panel = new JPanel() {
@@ -70,7 +83,14 @@ public class GameWindow extends JFrame {
         
         newGame = new JButton("New Game");
         newGame.addActionListener(e -> {
-            newGameWindow();
+            dispose();
+            try {
+                newGameWindow();
+                game.createPlayer(gameTextArea);
+            } catch (FileNotFoundException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
         });
         //loadGame = new JButton("Load Game");
         
@@ -91,18 +111,49 @@ public class GameWindow extends JFrame {
         setVisible(true);
        
     }
-    private void newGameWindow() {
+    private void newGameWindow() throws FileNotFoundException {
         // Creates the Frame and sets the default closer
         // operator to the red exit button.
+        strInput.setStringInput("null");
+        String[] options = {"The Hospital","Zombie Hive"};
+        int choice = JOptionPane.showOptionDialog(this, "You have a choice on which map you would like to play.\nPlayers are encouraged to play on Hospital.\nAnyone who dares can play Zombie Hive (Not Done).", "Choose Map:", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+        System.out.println(choice);
+        switch(choice){
+            case 0:
+                game.readMap("AdventureGame/data/levels/Hospital Map/The-Hospital.txt", roomMap);
+            case 1:
+                game.readMap("AdventureGame/data/levels/Hospital Map/The-Hospital.txt", roomMap);
+        }
         gameWindow = new JFrame("Covid, The Zombie Apocolypse");
         gameWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         // Sets the text area for the game
         gameTextArea = new JTextArea(20,60);
         gameTextArea.setEditable(false);
+        gameTextArea.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e){
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    String inputText = gameTextArea.getText();
+    
+                    String[] lines = inputText.split("\\n");
+    
+                    String input = lines[lines.length - 1];
+                    input.trim();
+                    
+                    System.out.println(input);
+                    GameWindow.strInput.setStringInput(input);
+                }
+            }
+            
+        });
+
         JScrollPane scroll = new JScrollPane(gameTextArea);
 
         // creation of the buttons
         button1 = new JButton("North");
+        button1.addActionListener(e -> {
+
+        });
         button2 = new JButton("South");
         button3 = new JButton("West");
         button4 = new JButton("East");
@@ -125,6 +176,10 @@ public class GameWindow extends JFrame {
 
         gameWindow.pack();
         gameWindow.setVisible(true);
+        gameTextArea.append(currentRoom.toString());
+        
+
+        
     }
     
     public static void main(String[] args) throws FileNotFoundException{

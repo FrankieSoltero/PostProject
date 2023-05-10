@@ -12,11 +12,15 @@ import javax.swing.JTextArea;
 
 import adventure_game.items.antiBiotics;
 import adventure_game.items.bandage;
+import javafx.scene.input.KeyEvent;
 import adventure_game.items.AssaultRifle;
 import adventure_game.items.Consumable;
 import adventure_game.items.Knife;
 import adventure_game.items.Pistols;
 import adventure_game.items.Weapons;
+
+import java.awt.Choice;
+import java.awt.event.KeyAdapter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -39,9 +43,9 @@ public class Game {
         Game game = new Game();
         game.createNPCS();
         game.createItems();
-        game.chooseMap();
+        //game.chooseMap();
 
-        game.createPlayer();
+        //game.createPlayer();
         
         System.out.println(Game.player.toString());
 
@@ -221,7 +225,7 @@ public class Game {
     /**
      * This allows for character creation by the user
      */
-    public void createPlayer(){
+    public void createPlayer(JTextArea textArea){
         /* TO-DO */
         /* Modify this method to allow the user to create their own player */
         /* The user will specify the player's name and description, and spend */
@@ -234,35 +238,37 @@ public class Game {
         
 
         while (totalPoints > 0) {
-            System.out.println("What is your name survivor? ");
-            name = Game.in.next();
-            System.out.println(name + ", you have 25 points to give yourself, 1 point is 10 health points, 5 damage points, and you start at level 0");
+            textArea.append("What is your name survivor? \n");
+            name = GameWindow.strInput.getStringInput();
+            textArea.append(name + ", you have 25 points to give yourself, 1 point is 10 health points, 5 damage points, and you start at level 0\n");
             pointsUsed = 0;
-            System.out.println("How many points would you like to put in health?");
-            health = Game.in.nextInt();
+            textArea.append("How many points would you like to put in health?\n");
+            health = Integer.parseInt(GameWindow.strInput.getStringInput());
             pointsUsed = health
             ;
             if (pointsUsed == 25) {
                 totalPoints -= pointsUsed;
                 health = 10 * health;
                 player = new Player(name, health,0,0);
+                textArea.setEditable(false);
                 continue;
             }
             else if(pointsUsed == 420){
                 health = 10 * health;
-                System.out.printf("You have found the legendary Joint while creating your character your health is now %s.",health);
-                System.out.printf("%S has %S health. You have %S points left. \n",name,health,totalPoints);
-                System.out.printf("You have %S points left. How many points would you like to put into damage? ",totalPoints);
-                damage = Game.in.nextInt();
+                textArea.append("You have found the legendary Joint while creating your character your health is now " + health + ".\n");
+                textArea.append(name + " has " + health + " health. You have " + totalPoints + " points left. \n");
+                textArea.append("You have " + totalPoints + " points left. How many points would you like to put into damage?\n");
+                damage = Integer.parseInt(GameWindow.strInput.getStringInput());
                 pointsUsed = damage;
                 totalPoints -= pointsUsed;
                 if (totalPoints == 0) {
                     damage = 5 * damage;
                     player = new Player(name, health, 0,damage);
+                    textArea.setEditable(false);
                     continue;
                 }
                 else {
-                System.out.println("You have either spent too little or too many of your points. Please Try again");
+                    textArea.append("You have either spent too little or too many of your points. Please Try again");
                     continue;
                 }
             }
@@ -271,12 +277,13 @@ public class Game {
                 health = 10 * health;
                 System.out.printf("%S has %S health. You have %S points left. \n",name,health,totalPoints);
                 System.out.printf("You have %S points left. How many points would you like to put into damage? ",totalPoints);
-                damage = Game.in.nextInt();
+                damage = Integer.parseInt(GameWindow.strInput.getStringInput());
                 pointsUsed += damage;
                 if (pointsUsed == 25) {
                     damage = 5 * damage;
                     player = new Player(name, health, 0,damage);
                     totalPoints -= pointsUsed;
+                    textArea.setEditable(false);
                     continue;
                 }
                 else {
@@ -323,7 +330,7 @@ public class Game {
      * to playing the game.
      * @param file of type String file
      */
-    public void readMap(String file) throws FileNotFoundException {
+    public void readMap(String file, ArrayList<Room> rooms) throws FileNotFoundException {
         File f = new File(file);
         Scanner scnr = new Scanner(f);
         int count = 0;
@@ -349,7 +356,7 @@ public class Game {
                 String roomName = fileInfo[1];
                 String roomBio = fileInfo[2];
                 Room room = new Room(roomNumber, roomName, roomBio);
-                roomMap.add(room);
+                rooms.add(room);
             } else if (count > numberLinesToRead + 3) {
                 line.trim();
                 String[] exits = line.split(":");
@@ -393,56 +400,59 @@ public class Game {
      * Allows for the player to choose a map
      * throws a fileNotFoundException
      */
-    public void chooseMap() throws FileNotFoundException {
-        System.out.print("You have a choice on which map you would like to play.\nPlayers are encouraged to play on Hospital.\nAnyone who dares can play Zombie Hive.\n1: The Hospital\n2: Zombie Hive(not done don't choose).\n");
-        int choice = in.nextInt();
-        switch(choice) {
-            case 1:
-                this.readMap("AdventureGame/data/levels/Hospital Map/The-Hospital.txt");
-                int i;
-                for (i = 1; i < 10; ++i){
-                    roomMap.get(i).setNPC();
-                }
-                for (i = 11; i < 19; ++i){
-                    roomMap.get(i).setNPC();
-                }
-                roomMap.get(19).setBossNPC();
-                roomMap.get(22).setBossNPC();
-                roomMap.get(24).setBossNPC();
-                roomMap.get(24).setRoomCure();
-                roomMap.get(1).setItem();
-                roomMap.get(1).setWeapon();
-                roomMap.get(3).setItem();
-                roomMap.get(3).setWeapon();
-                roomMap.get(4).setItem();
-                roomMap.get(6).setWeapon();
-                roomMap.get(7).setItem();
-                roomMap.get(7).setWeapon();
-                roomMap.get(8).setWeapon();
-                roomMap.get(9).setWeapon();
-                roomMap.get(10).setBossNPC();
-                roomMap.get(11).setWeapon();
-                roomMap.get(11).setItem();
-                roomMap.get(16).setWeapon();
-                roomMap.get(16).setWeapon();
-                roomMap.get(15).setWeapon();
-                roomMap.get(17).setWeapon();
-                roomMap.get(17).setItem();
-                roomMap.get(20).setNPC();
-                roomMap.get(21).setNPC();
+    public void chooseMap(JTextArea textArea) throws FileNotFoundException {
+        if (GameWindow.strInput.getStringInput() != "null"){
+            int choice = Integer.parseInt(GameWindow.strInput.getStringInput());
+            switch(choice) {
+                case 1:
+                    this.readMap("AdventureGame/data/levels/Hospital Map/The-Hospital.txt", roomMap);
+                    int i;
+                    for (i = 1; i < 10; ++i){
+                        roomMap.get(i).setNPC();
+                    }
+                    for (i = 11; i < 19; ++i){
+                        roomMap.get(i).setNPC();
+                    }
+                    roomMap.get(19).setBossNPC();
+                    roomMap.get(22).setBossNPC();
+                    roomMap.get(24).setBossNPC();
+                    roomMap.get(24).setRoomCure();
+                    roomMap.get(1).setItem();
+                    roomMap.get(1).setWeapon();
+                    roomMap.get(3).setItem();
+                    roomMap.get(3).setWeapon();
+                    roomMap.get(4).setItem();
+                    roomMap.get(6).setWeapon();
+                    roomMap.get(7).setItem();
+                    roomMap.get(7).setWeapon();
+                    roomMap.get(8).setWeapon();
+                    roomMap.get(9).setWeapon();
+                    roomMap.get(10).setBossNPC();
+                    roomMap.get(11).setWeapon();
+                    roomMap.get(11).setItem();
+                    roomMap.get(16).setWeapon();
+                    roomMap.get(16).setWeapon();
+                    roomMap.get(15).setWeapon();
+                    roomMap.get(17).setWeapon();
+                    roomMap.get(17).setItem();
+                    roomMap.get(20).setNPC();
+                    roomMap.get(21).setNPC();
 
-                roomMap.get(20).setWeapon();
-                roomMap.get(20).setItem();
-                roomMap.get(21).setWeapon();
-                roomMap.get(21).setItem();
-                break;
-            case 2:
-                this.readMap("/Users/frankiesoltero/Desktop/GitHub/project-01-adventure-game-FrankieSoltero/data/levels/the-stilts.txt");
-                break;
+                    roomMap.get(20).setWeapon();
+                    roomMap.get(20).setItem();
+                    roomMap.get(21).setWeapon();
+                    roomMap.get(21).setItem();
+                    textArea.setEditable(false);
+                    break;
+                case 2:
+                    textArea.setEditable(false);
+                    this.readMap("/Users/frankiesoltero/Desktop/GitHub/project-01-adventure-game-FrankieSoltero/data/levels/the-stilts.txt", roomMap);
+                    break;
+            }
         }
-        
-    }
-    /**
+
+}
+/**
      * Creates the NPCs for the map
      */
     public void createNPCS(){
