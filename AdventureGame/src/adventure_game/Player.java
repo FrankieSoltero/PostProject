@@ -1,5 +1,7 @@
 package adventure_game;
 
+import javax.swing.JTextArea;
+
 import adventure_game.items.bandage;
 
 public class Player extends Character{
@@ -20,7 +22,7 @@ public class Player extends Character{
      * @param other of type Character
      */
     @Override
-    public void takeTurn(Character other){
+    public void takeTurn(Character other, JTextArea output){
         if(this.isStunned()){
             this.decreaseTurnsStunned();
             System.out.printf("%S is stunned and cannot take turn.", this.getName());
@@ -40,10 +42,10 @@ public class Player extends Character{
         int choice = Game.in.nextInt();
         switch(choice){
             case 1:
-                this.attack(other);
+                this.attack(other, output);
                 break;
             case 2:
-                this.defend(other);
+                this.defend(other, output);
                 break;
             case 3:
                 if(hasItems()){

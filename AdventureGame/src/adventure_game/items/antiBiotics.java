@@ -1,5 +1,7 @@
 package adventure_game.items;
 
+import javax.swing.JTextArea;
+
 import adventure_game.Character;
 import adventure_game.Game;
 
@@ -10,7 +12,7 @@ public class antiBiotics implements Consumable {
      * max hitpoints then the owner resets to max health.
      * @param owner of type Character
      */
-    public void consume(Character owner){
+    public void consume(Character owner, JTextArea output){
         int hitPoints = calculateHealing();
         int hitPointsFromMax = owner.getMaxHealth() - owner.getHealth();
 

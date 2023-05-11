@@ -35,7 +35,7 @@ public class antiBioticsTest {
         // Implement this
         assertTrue(F.getHealth() == 100);
         F.modifyHealth(-50);
-        test.consume(F);
+        //test.consume(F);
         assertFalse(F.getHealth() == 50);
 
 

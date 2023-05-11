@@ -1,4 +1,7 @@
 package adventure_game;
+
+import javax.swing.JTextArea;
+
 public class NPC extends Character{
     /**
      * This is the Constructor for NPC and requires parameters name,
@@ -16,13 +19,13 @@ public class NPC extends Character{
      * @param other of type Character
      */
     @Override
-    public void takeTurn(Character other){
+    public void takeTurn(Character other, JTextArea output){
         if(this.isStunned()){
             this.decreaseTurnsStunned();
             System.out.printf("%S is unable to take any actions this turn!", this.getName());
             return;
         }
-        this.attack(other);
+        this.attack(other, output);
        
     }
     @Override

@@ -5,6 +5,8 @@ import adventure_game.items.bandage;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import javax.swing.JTextArea;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 
@@ -12,6 +14,7 @@ public class bandageTest {
 
     private Character F;
     private bandage test;
+    private JTextArea t;
 
     
     @BeforeEach
@@ -35,16 +38,16 @@ public class bandageTest {
         // Implement this
         assertTrue(F.getHealth() == 200);
         F.modifyHealth(-100);
-        test.consume(F);
+        test.consume(F,t);
         assertFalse(F.getHealth() == 200);
         F.modifyHealth(200);
         F.modifyHealth(-100);
         assertTrue(F.getHealth() == 100);
-        test.consume(F);
+        test.consume(F,t);
         assertTrue(F.getHealth() <= 190);
         F.modifyHealth(100);
         F.modifyHealth(-15);
-        test.consume(F);
+        test.consume(F,t);
         assertTrue(F.getHealth() == 185);
 
 

@@ -1,5 +1,7 @@
 package adventure_game.items;
 
+import javax.swing.JTextArea;
+
 import adventure_game.Character;
 import adventure_game.Game;
  
@@ -29,16 +31,16 @@ public class bandage implements Consumable {
      * The consume method allows for the bandage to heal the Character up to 90 hitpoints
      * @param owner of type Character
      */
-    public void consume(Character owner) {
+    public void consume(Character owner, JTextArea output) {
         int hitPoints = calculateHealing();
         int hitPointsfromMax = owner.getMaxHealth() - 20;
 
         if (owner.getHealth() >= hitPointsfromMax) {
             hitPoints = 0;
-            System.out.printf("You are above %s health bandages do not work.\n",hitPointsfromMax);
+            output.append("You are above " + hitPointsfromMax + " therefore you do not heal\n.");
         }
         owner.modifyHealth(hitPoints);
-        System.out.printf("You heal for %d points, back up to %d/%d.\n", hitPoints, owner.getHealth(), owner.getMaxHealth());
+        output.append("You heal for " + hitPoints + " points, back up to " + owner.getHealth() + "/" + owner.getMaxHealth() + "\n");
         
     }
 }

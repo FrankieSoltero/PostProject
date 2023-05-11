@@ -1,6 +1,8 @@
 package adventure_game;
 import java.util.ArrayList;
 
+import javax.swing.JTextArea;
+
 import adventure_game.items.Consumable;
 
 abstract public class Character{
@@ -112,7 +114,7 @@ abstract public class Character{
      * abstract method required to be defined in subclasses
      * @param other is an NPC in this case
      */
-    abstract void takeTurn(Character other);
+    abstract void takeTurn(Character other, JTextArea output);
     /**
      * Attacks the other Character
      * if the other is invincible it makes this character unable to attack for
@@ -125,11 +127,9 @@ abstract public class Character{
      * Finally modifies other health to lower it by the damage.
      * @param other of type Character
      */
-    public void attack(Character other){
+    public void attack(Character other, JTextArea output){
         if(other.isInvincible()){
-            System.out.printf("%S is unable to attack %S!\n", 
-                                this.getName(), 
-                                other.getName());
+            output.append(this.name + " is unable to attack!" + other.name + "\n");
             other.decreaseTurnsInvincible();
             return;
         }
@@ -144,12 +144,9 @@ abstract public class Character{
             damage *= 1.5;
             other.decreaseTurnsVulnerable();
         }
-
-        System.out.printf("%s dealt %d damage to %s\n", 
-                            this.getName(), 
-                            damage, 
-                            other.getName());
         other.modifyHealth(-damage);
+        output.append(this.name + " dealt " + damage + " damage to " + other.getName() + "\n");
+        
     }
     /**
      * Chance is set to the next random Double.
@@ -158,14 +155,14 @@ abstract public class Character{
      * Else the character is set to vulnerable for 1 turn.
      * @param other of type Character
      */
-    public void defend(Character other){
+    public void defend(Character other, JTextArea output){
         double chance = Game.rand.nextDouble();
         if(chance <=0.75){
-            System.out.printf("%s blocks %s attack and is now invincible for 1 turn!\n", this.getName(),other.getName());
+            output.append(this.getName() + " blocks " + other.getName() + " attack and is not invincible for 1 turn!\n");
             this.setAsInvincible(1);
             this.setTempDamageBuff(2.0);
         } else {
-            System.out.printf("%s stumbles. They are vulnerable for the next turn!\n", this.getName());
+            output.append(this.getName() + " stumbles. They are vulnerable for 1 turn!\n");
             this.setAsVulnerable(1);
         }
     }
@@ -308,7 +305,6 @@ abstract public class Character{
         }
         System.out.print("  Enter your choice: ");
         int choice = Game.in.nextInt();
-        items.get(choice-1).consume(owner);
         items.remove(choice-1);
     }
     /**

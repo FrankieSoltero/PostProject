@@ -1,5 +1,7 @@
 package adventure_game.items;
 
+import javax.swing.JTextArea;
+
 import adventure_game.Character;
 
 /**
@@ -18,6 +20,6 @@ public interface Consumable {
      * 
      * @param owner the Character consuming this item
      */
-    public void consume(Character owner);
+    public void consume(Character owner, JTextArea output);
 
 }
