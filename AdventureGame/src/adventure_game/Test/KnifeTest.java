@@ -5,12 +5,15 @@ import adventure_game.items.Knife;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import javax.swing.JTextArea;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 
 public class KnifeTest {
     private Character F;
     private Knife test;
+    private JTextArea output;
 
     @BeforeEach
     void setup() {
@@ -20,7 +23,7 @@ public class KnifeTest {
     @Test
     void testKnife() {
         assertTrue(F.getBaseDamage() == 10);
-        test.pickUpItem(F);
+        test.pickUpItem(F, output);
         assertTrue(F.getBaseDamage() != 10);
     }
 }

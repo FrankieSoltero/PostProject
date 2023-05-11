@@ -133,7 +133,7 @@ abstract public class Character{
             other.decreaseTurnsInvincible();
             return;
         }
-        double modifier = Game.rand.nextDouble();
+        double modifier = GameWindow.rand.nextDouble();
         modifier = (modifier*0.4) + 0.8;
         int damage = (int)(this.baseDamage * modifier);
         // apply temporary damage buff, then reset it back to 1.0
@@ -156,7 +156,7 @@ abstract public class Character{
      * @param other of type Character
      */
     public void defend(Character other, JTextArea output){
-        double chance = Game.rand.nextDouble();
+        double chance = GameWindow.rand.nextDouble();
         if(chance <=0.75){
             output.append(this.getName() + " blocks " + other.getName() + " attack and is not invincible for 1 turn!\n");
             this.setAsInvincible(1);
@@ -288,24 +288,6 @@ abstract public class Character{
         else {
             items.add(item);
         }
-    }
-    /**
-     * Uses an item when wanted
-     * For example if antiBiotics are stored in slot 1 then it allows
-     * for the user to use them when prompted
-     * @param owner of Type Character
-     * @param other of type Character
-     */
-    public void useItem(Character owner, Character other){
-        int i = 1;
-        System.out.printf("  Do you want to use:\n");
-        for(Consumable item : items){
-            System.out.printf("    %d: %S\n", i, item.getClass().getName());
-            i++;
-        }
-        System.out.print("  Enter your choice: ");
-        int choice = Game.in.nextInt();
-        items.remove(choice-1);
     }
     /**
      * Tests to see if the items inventory is empty if its not empty it returns

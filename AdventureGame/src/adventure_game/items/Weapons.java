@@ -1,5 +1,7 @@
 package adventure_game.items;
 
+import javax.swing.JTextArea;
+
 import adventure_game.Character;
 
 /**
@@ -18,5 +20,5 @@ import adventure_game.Character;
      * 
      * @param owner is the character that will do the action of picking up.
      */
-    public void pickUpItem(Character owner);
+    public void pickUpItem(Character owner, JTextArea output);
  }

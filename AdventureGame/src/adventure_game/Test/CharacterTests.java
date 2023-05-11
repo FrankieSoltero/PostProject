@@ -2,12 +2,13 @@ package adventure_game.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import javax.swing.JTextArea;
+
 import org.junit.jupiter.api.Test;
 
 import adventure_game.Character;
 import adventure_game.NPC;
 import adventure_game.Player;
-import adventure_game.items.antiBiotics;
 import adventure_game.items.*;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -17,11 +18,11 @@ public class CharacterTests{
     private Character c;
     private Character b;
     private Consumable a;
+    private JTextArea output;
     @BeforeEach
     void setup(){
         c = new Player("Hero", 100, 0, 10);
         b = new NPC("Enemy", 100, 1, 10);
-        a = new antiBiotics();
 
     }
 
@@ -70,20 +71,20 @@ public class CharacterTests{
     @Test
     void obtainTest() {
         assertFalse(c.hasItems());
-        c.obtain(a);
+        c.obtain(a, output);
         assertTrue(c.hasItems());
     }
     @Test
     void testAttack() {
         assertTrue(b.getHealth() == 100);
-        c.attack(b);
+        c.attack(b, output);
         assertTrue(b.getHealth() != 100);
         b.modifyHealth(100);
         b.setAsInvincible(1);
-        c.attack(b);
+        c.attack(b, output);
         assertTrue(b.getHealth() == 100);
         b.setAsVulnerable(1);
-        c.attack(b);
+        c.attack(b, output);
         assertTrue(b.getHealth() != 100);
     }
     @Test

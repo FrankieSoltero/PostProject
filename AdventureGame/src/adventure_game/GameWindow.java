@@ -1,14 +1,9 @@
 package adventure_game;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
@@ -18,31 +13,18 @@ import javax.imageio.ImageIO;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.SwingConstants;
-
 import adventure_game.items.AssaultRifle;
-import adventure_game.items.Consumable;
 import adventure_game.items.Knife;
 import adventure_game.items.Pistols;
 import adventure_game.items.Weapons;
-import adventure_game.items.antiBiotics;
 import adventure_game.items.bandage;
-
-import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
 
 public class GameWindow extends JFrame {
     private JFrame gameWindow;
     private JFrame battleWindow;
-    private JLabel title;
     private JTextArea gameTextArea;
     private JTextArea textArea;
     private JButton button1;
@@ -56,13 +38,12 @@ public class GameWindow extends JFrame {
     private JButton useItem;
     private JButton createItem;
     private JButton newGame;
-    private JButton loadGame;
     private Room currentRoom;
     private ArrayList<Room> roomMap = new ArrayList<>();
-    private ArrayList<Consumable> Items = new ArrayList<>();
     private ArrayList<NPC> NPCS = new ArrayList<>();
     private ArrayList<Weapons> weapons = new ArrayList<>();
     public int choice = 0;
+    public int NpcChoice;
     
     private Player player = new Player("Mick",150, 0, 75);
     public static Random rand = new Random();
@@ -113,6 +94,7 @@ public class GameWindow extends JFrame {
         //loadGame = new JButton("Load Game");
         
         setLayout(new GridBagLayout());
+        setSize(400, 400);
 
         GridBagConstraints buttonConstraints = new GridBagConstraints();
         buttonConstraints.fill = GridBagConstraints.HORIZONTAL;
@@ -137,6 +119,7 @@ public class GameWindow extends JFrame {
                 readMap("PostProject/AdventureGame/data/levels/Hospital Map/The-Hospital.txt", roomMap);
                 level1();
                 createNPCS1();
+                createItems();
             case 1:
                 readMap("PostProject/AdventureGame/data/levels/Hospital Map/The-Hospital.txt", roomMap);
         }
@@ -229,7 +212,8 @@ public class GameWindow extends JFrame {
 
         gameWindow.pack();
         gameWindow.setVisible(true);
-        gameTextArea.append("General Should Knows\n1. Creating a bandage and using an item take a turn\n2. You can only carry 10 items at a time\n3. The game will tell you if theres another zombie and what you pick up\n4. Weapons are automatically picked up\nHave fun\n");
+        gameTextArea.append("General Should Knows\n1. Creating a bandage and using an item take a turn\n2. You can only carry 10 items at a time\n3. The game will tell you if theres another zombie and what you pick up\n4. Weapons are automatically picked up\n5. NPCS level randomly generate for each one\n6. Defending only stops damage for that turn. The NPC is then vulnerable for the next turn but can still hit you\n7. A message will pop up telling you if theres another zombie in the room.\nHappy Fighting survivor.\n\n");
+        gameTextArea.append("It is a cold day in 2040. My name is Mick. Its been 20 years since the zombie apocalypse, it all began when covid had it's boom the \ndoctor got the symptoms very wrong. It was originally reported as a mild to severe cold, but then came its mutation. Suddenly people began to get agressive, then hungry, finally came the zombies.\nFirst it was so far everything seemed fine, 2 years later the world was nothing but a wasteland where the survivors are greatly outnumbered.\n 20 years later, here I am where the last reported government found a cure but was sadly overrun with zombies. I am the worlds only hope.\n\n");
         gameTextArea.append(player.toString());
         gameTextArea.append(currentRoom.ToString());
 
@@ -251,7 +235,7 @@ public class GameWindow extends JFrame {
             if (!player.isAlive()) {
                 battleWindow.dispose();
             }
-            if (!op.isAlive()){
+            if (op.getHealth() <= player.getBaseDamage()){
                 battleWindow.dispose();
             }
             textArea.append("Your health is " + player.getHealth() + "/" + player.getMaxHealth() + "\n");
@@ -264,7 +248,7 @@ public class GameWindow extends JFrame {
             if (!player.isAlive()) {
                 battleWindow.dispose();
             }
-            if (!op.isAlive()){
+            if (op.getHealth() <= player.getBaseDamage()){
                 battleWindow.dispose();
             }
             textArea.append("Your health is " + player.getHealth() + "/" + player.getMaxHealth() + "\n");
@@ -275,15 +259,15 @@ public class GameWindow extends JFrame {
             if (player.hasItems()){
                 player.items.get(0).consume(player, textArea);
                 player.items.remove(0);
+                op.takeTurn(op, gameTextArea);
             }
             else{
-                textArea.append("You do not have any items");
+                textArea.append("You do not have any items. Choose another option");
             }
-            op.takeTurn(player, textArea);
             if (!player.isAlive()) {
                 battleWindow.dispose();
             }
-            if (!op.isAlive()){
+            if (op.getHealth() <= player.getBaseDamage()){
                 battleWindow.dispose();
             }
             textArea.append("You have " + player.getHealth() + "/" + player.getMaxHealth() + "\n");
@@ -296,7 +280,7 @@ public class GameWindow extends JFrame {
             if (!player.isAlive()) {
                 battleWindow.dispose();
             }
-            if (!op.isAlive()){
+            if (op.getHealth() <= player.getBaseDamage()){
                 battleWindow.dispose();
             }
             textArea.append("You have " + player.getHealth() + "/" + player.getMaxHealth() + "\n");
@@ -306,7 +290,109 @@ public class GameWindow extends JFrame {
         battleWindow.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosed(WindowEvent e) {
-                
+                if (currentRoom.hasNPC() == 1){
+                    if (player.isAlive()){
+                        NPCS.get(NpcChoice).modifyHealth(1000);
+                        gameTextArea.append(NPCS.get(NpcChoice).getName() + " has died\n");
+                        int NPCdespawn = rand.nextInt(2)+1;
+                        if (NPCdespawn == 1){
+                            gameTextArea.append("There are no more zombies in here for now.\n");
+                            currentRoom.removeNPC();
+                        }
+                        if (NPCdespawn == 2){
+                            gameTextArea.append("Theres another zombie in here. Fuck.\n");
+                            currentRoom.hasNPC();
+                        }
+                        if (currentRoom.hasItem() == 1) {
+                            gameTextArea.append("You have picked up a bandage.\n");
+                            player.obtain(new bandage(), gameTextArea);
+                            currentRoom.removeItem();
+                        }
+                        if (currentRoom.hasWeapon() == 1){
+                            gameTextArea.append("You have found a weapon.\n");
+                            int randWeapon = rand.nextInt(5);
+                            weapons.get(randWeapon).pickUpItem(player, gameTextArea);
+                            currentRoom.removeWeapon();
+                        }
+                    }
+                    else{
+                        if (NPCS.get(NpcChoice).getName() == "Walker"){
+                            gameTextArea.append("A walker has killed you. You were never destined to make if far. Get better.");
+                        }
+                        else if(NPCS.get(NpcChoice).getName() == "Creeper") {
+                            gameTextArea.append("A creeper has killed you. This is not minecraft do better");
+                        }
+                        else {
+                            gameTextArea.append("You died to a Sprinter. Should have ran track in highschool.");
+                        }
+                        battleWindow.dispose();
+                        new GameWindow();
+                        }
+                            
+                    }
+                if (currentRoom.hasNPC() == 4 && !currentRoom.hasCure()){
+                    if (currentRoom.getRoomNumber() == 10){
+                        if (player.isAlive()){
+                            gameTextArea.append("You have killed a boss. Good job you level up.\n");
+                            player.levelModifier();
+                            player.levelModifier();
+                            player.levelModifier();
+                            gameTextArea.append(currentRoom.ToString());
+                        }
+                        else {
+                            gameTextArea.append("You have lost to " + NPCS.get(12).getName() + " Get better.\n");
+                            battleWindow.dispose();
+                            new GameWindow();
+                            
+                        }
+                    }
+                    else if (currentRoom.getRoomNumber() == 19){
+                        if (player.isAlive()){
+                            gameTextArea.append("You have killed a boss. Good job you level up.\n");
+                            player.levelModifier();
+                            player.levelModifier();
+                            player.levelModifier();
+                            gameTextArea.append(currentRoom.ToString());
+                        }
+                        else {
+                            gameTextArea.append("You have lost to " + NPCS.get(13).getName() + " Take an L and move on.\n");
+                            battleWindow.dispose();
+                            new GameWindow();
+                            
+                        }
+                    }
+                    else {
+                        gameTextArea.append(NPCS.get(14).toString());
+                        enterCombat(NPCS.get(14), gameTextArea);
+                        if (player.isAlive()){
+                            gameTextArea.append("You have killed a boss. Good job you level up.\n");
+                            player.levelModifier();
+                            player.levelModifier();
+                            player.levelModifier();
+                            gameTextArea.append(currentRoom.ToString());
+                        }
+                        else {
+                            gameTextArea.append("You have lost to " + NPCS.get(14).getName() + " Take an L and move on.\n");
+                            battleWindow.dispose();
+                            new GameWindow();
+                            
+                        }
+                    }
+                    
+                }
+                if (currentRoom.hasNPC() == 4 && currentRoom.hasCure()) {
+                    if (player.isAlive()){
+                        gameTextArea.append("You have found the cure you win");
+                        choice += 1;
+                        new GameWindow();
+                        
+                    }
+                    else{
+                        gameTextArea.append("You lost");
+                        new GameWindow();
+                                 
+                    }
+                }
             }
         });
         textArea.append(player.toString());
@@ -465,29 +551,29 @@ public class GameWindow extends JFrame {
         weapons.add(AR);
     }
     public void createNPCS1(){
-        int level = Game.rand.nextInt(15);
+        int level = rand.nextInt(15);
         NPC Walker = new NPC("Walker",100,level,15);
-        level = Game.rand.nextInt(10)+1;
+        level = rand.nextInt(11);
         NPC Walker2 = new NPC("Walker",100,level,15);
-        level = Game.rand.nextInt(10)+1;
+        level = rand.nextInt(11);
         NPC Walker3 = new NPC("Walker",100,level,15);
-        level = Game.rand.nextInt(10)+1;
+        level = rand.nextInt(11);
         NPC Walker4 = new NPC("Walker",100,level,15);
-        level = Game.rand.nextInt(10)+1;
+        level = rand.nextInt(11);
         NPC Walker5 = new NPC("Walker",100,level,15);
-        level = Game.rand.nextInt(10)+1;
+        level = rand.nextInt(11);
         NPC Creeper = new NPC("Creeper",250,level,18);
-        level = Game.rand.nextInt(10)+1;
+        level = rand.nextInt(11);
         NPC Creeper2 = new NPC("Creeper",250,level,18);
-        level = Game.rand.nextInt(10)+1;
+        level = rand.nextInt(11);
         NPC Creeper3 = new NPC("Creeper",250,level,18);
-        level = Game.rand.nextInt(10)+1;
+        level = rand.nextInt(11);
         NPC Creeper4 = new NPC("Creeper",250,level,18);
-        level = Game.rand.nextInt(5)+1;
+        level = rand.nextInt(6);
         NPC Sprinter = new NPC("Sprinter", 500, level, 25);
-        level = Game.rand.nextInt(5)+1;
+        level = rand.nextInt(6);
         NPC Sprinter2 = new NPC("Sprinter", 500, level, 25);
-        level = Game.rand.nextInt(5)+1;
+        level = rand.nextInt(6);
         NPC Sprinter3 = new NPC("Sprinter", 500, level, 25);
         NPC HiveMind = new NPC("HiveMind",1000,6,70);
         NPC Faucci = new NPC("Faucci",20000,20,150);
@@ -516,112 +602,29 @@ public class GameWindow extends JFrame {
     }
     public void NPCSBattleSet(JTextArea gameTextArea){
         if (currentRoom.hasNPC() == 1){
-            int NpcChoice = rand.nextInt(12);
+            NpcChoice = rand.nextInt(12);
             battleWindow(NPCS.get(NpcChoice));
-                if (!NPCS.get(NpcChoice).isAlive()){
-                    NPCS.get(NpcChoice).modifyHealth(1000);
-                    gameTextArea.append(NPCS.get(NpcChoice).getName() + " has died\n");
-                    int NPCdespawn = rand.nextInt(2)+1;
-                    if (NPCdespawn == 1){
-                        gameTextArea.append("There are no more zombies in here for now.\n");
-                        currentRoom.removeNPC();
-                    }
-                    if (NPCdespawn == 2){
-                        gameTextArea.append("Theres another zombie in here. Fuck.\n");
-                        currentRoom.hasNPC();
-                    }
-                    if (currentRoom.hasItem() == 1) {
-                        gameTextArea.append("You have picked up an item. Look in your inventory during your next fight to see what it is.\n");
-                        int randItem = rand.nextInt(4);
-                        player.obtain(Items.get(randItem), gameTextArea);
-                        currentRoom.removeItem();
-                    }
-                    if (currentRoom.hasWeapon() == 1){
-                        gameTextArea.append("You have found a weapon.\n");
-                        int randWeapon = rand.nextInt(5);
-                        weapons.get(randWeapon).pickUpItem(player);
-                        currentRoom.removeWeapon();
-                    }
-                }
-                if (!player.isAlive()){
-                    if (NPCS.get(NpcChoice).getName() == "Walker"){
-                        gameTextArea.append("A walker has killed you. You were never destined to make if far. Get better.");
-                    }
-                    else if(NPCS.get(NpcChoice).getName() == "Creeper") {
-                        gameTextArea.append("A creeper has killed you. This is not minecraft do better");
-                    }
-                    else {
-                        gameTextArea.append("You died to a Sprinter. Should have ran track in highschool.");
-                    }
-                    new GameWindow();
-                }
                     
             }
         if (currentRoom.hasNPC() == 4 && !currentRoom.hasCure()){
             if (currentRoom.getRoomNumber() == 10){
-                gameTextArea.append(NPCS.get(12).toString());
-                enterCombat(NPCS.get(12), gameTextArea);
-                if (player.isAlive()){
-                    gameTextArea.append("You have killed a boss. Good job you level up.\n");
-                    player.levelModifier();
-                    player.levelModifier();
-                    player.levelModifier();
-                    gameTextArea.append(currentRoom.ToString());
-                }
-                else {
-                    gameTextArea.append("You have lost to " + NPCS.get(12).getName() + " Get better.\n");
-                    
-                }
+                battleWindow(NPCS.get(12));
             }
             else if (currentRoom.getRoomNumber() == 19){
-                gameTextArea.append(NPCS.get(13).toString());
-                enterCombat(NPCS.get(13), gameTextArea);
-                if (player.isAlive()){
-                    gameTextArea.append("You have killed a boss. Good job you level up.\n");
-                    player.levelModifier();
-                    player.levelModifier();
-                    player.levelModifier();
-                    gameTextArea.append(currentRoom.ToString());
-                }
-                else {
-                    gameTextArea.append("You have lost to " + NPCS.get(13).getName() + " Take an L and move on.\n");
-                    
-                }
+                battleWindow(NPCS.get(13));
             }
             else {
-                gameTextArea.append(NPCS.get(14).toString());
-                enterCombat(NPCS.get(14), gameTextArea);
-                if (player.isAlive()){
-                    gameTextArea.append("You have killed a boss. Good job you level up.\n");
-                    player.levelModifier();
-                    player.levelModifier();
-                    player.levelModifier();
-                    gameTextArea.append(currentRoom.ToString());
-                }
-                else {
-                    gameTextArea.append("You have lost to " + NPCS.get(14).getName() + " Take an L and move on.\n");
-                    
-                }
+                battleWindow(NPCS.get(14));
             }
             
         }
         if (currentRoom.hasNPC() == 4 && currentRoom.hasCure()) {
-            System.out.println(NPCS.get(15).toString());
-            enterCombat(NPCS.get(15), gameTextArea);
-            if (player.isAlive()){
-                gameTextArea.append("You have found the cure you win");
-                choice += 1;
-                
-            }
-            else{
-                gameTextArea.append("You lost");
-                         
-            }
+            battleWindow(NPCS.get(15));
         }
     }
     
     public static void main(String[] args) throws FileNotFoundException{
-       GameWindow game = new GameWindow();
+        new GameWindow();
 
         
     }
