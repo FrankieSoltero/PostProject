@@ -3,6 +3,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.awt.*;
@@ -42,6 +44,7 @@ public class GameWindow extends JFrame {
     private JFrame battleWindow;
     private JLabel title;
     private JTextArea gameTextArea;
+    private JTextArea textArea;
     private JButton button1;
     private JButton button2;
     private JButton button3;
@@ -61,7 +64,7 @@ public class GameWindow extends JFrame {
     private ArrayList<Weapons> weapons = new ArrayList<>();
     public int choice = 0;
     
-    private Player player = new Player("Baron",150, 0, 75);
+    private Player player = new Player("Mick",150, 0, 75);
     public static Random rand = new Random();
     
 
@@ -80,7 +83,7 @@ public class GameWindow extends JFrame {
             // Use a method to load the image to ensure it is loaded before paintComponent is called
             private void loadImage() {
                 try {
-                    backgroundImage = ImageIO.read(new File("AdventureGame/data/levels/Hospital Map/HE.png"));
+                    backgroundImage = ImageIO.read(new File("PostProject/AdventureGame/data/levels/Hospital Map/HE.png"));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -126,7 +129,7 @@ public class GameWindow extends JFrame {
         setVisible(true);
        
     }
-    private void newGameWindow() throws FileNotFoundException {
+    public void newGameWindow() throws FileNotFoundException {
         // Creates the Frame and sets the default closer
         // operator to the red exit button.
         switch(choice){
@@ -158,7 +161,7 @@ public class GameWindow extends JFrame {
                 currentRoom = currentRoom.getNorthRoom();
                 gameTextArea.append(currentRoom.ToString());
             }
-            NPCSBattleSet();
+            NPCSBattleSet(gameTextArea);
         });
         button2 = new JButton("South");
         button2.addActionListener(e -> {
@@ -169,7 +172,7 @@ public class GameWindow extends JFrame {
                 currentRoom = currentRoom.getSouthRoom();
                 gameTextArea.append(currentRoom.ToString());
             }
-            NPCSBattleSet();
+            NPCSBattleSet(gameTextArea);
         });
         button3 = new JButton("West");
         button3.addActionListener(e -> {
@@ -180,7 +183,7 @@ public class GameWindow extends JFrame {
                 currentRoom = currentRoom.getWestRoom();
                 gameTextArea.append(currentRoom.ToString());
             }
-            NPCSBattleSet();
+            NPCSBattleSet(gameTextArea);
         });
         button4 = new JButton("East");
         button4.addActionListener(e -> {
@@ -191,23 +194,23 @@ public class GameWindow extends JFrame {
                 currentRoom = currentRoom.getEastRoom();
                 gameTextArea.append(currentRoom.ToString());
             }
-            NPCSBattleSet();
+            NPCSBattleSet(gameTextArea);
         });
         button5 = new JButton("Use Bandage");
         button5.addActionListener(e -> {
             if (player.hasItems()){
-                Items.get(0).consume(player, gameTextArea);
-                Items.remove(0);
-                gameTextArea.append(currentRoom.ToString());
+                player.items.get(0).consume(player, gameTextArea);
+                player.items.remove(0);
             }
             else{
                 gameTextArea.append("You do not have any items");
             }
+            NPCSBattleSet(gameTextArea);
         });
         button6 = new JButton("Create a Bandage");
         button6.addActionListener(e -> {
-            player.obtain(new bandage());
-            gameTextArea.append(currentRoom.ToString());
+            player.obtain(new bandage(),gameTextArea);
+            NPCSBattleSet(gameTextArea);
         });
         // Add components to the gameWindow
         Container gamePane = gameWindow.getContentPane();
@@ -237,50 +240,77 @@ public class GameWindow extends JFrame {
     public void battleWindow(NPC op){
         battleWindow = new JFrame(player.getName() + " vs " + op.getName() + "\n");
         
-        gameTextArea = new JTextArea(20,60);
-        gameTextArea.setEditable(false);
-        JScrollPane scroll = new JScrollPane(gameTextArea);
+        textArea = new JTextArea(20,60);
+        textArea.setEditable(false);
+        JScrollPane scroll = new JScrollPane(textArea);
 
         attack = new JButton("Attack");
         attack.addActionListener(e -> {
-            op.takeTurn(op, gameTextArea);
-            player.attack(op, gameTextArea);
+            op.takeTurn(player, textArea);
+            player.attack(op, textArea);
+            if (!player.isAlive()) {
+                battleWindow.dispose();
+            }
             if (!op.isAlive()){
                 battleWindow.dispose();
             }
-            gameTextArea.append("You have attacked. Your health is " + player.getHealth() + "/" + player.getMaxHealth() + "\n");
-            gameTextArea.append(op.getName() + " has " + op.getHealth() + " left\n");
+            textArea.append("Your health is " + player.getHealth() + "/" + player.getMaxHealth() + "\n");
+            textArea.append(op.getName() + " has " + op.getHealth() + " left\n");
         });
         defend = new JButton("Defend");
         defend.addActionListener(e -> {
-            op.takeTurn(op, gameTextArea);
-            player.defend(op, gameTextArea);
-            
+            op.takeTurn(player, textArea);
+            player.defend(op, textArea);
+            if (!player.isAlive()) {
+                battleWindow.dispose();
+            }
+            if (!op.isAlive()){
+                battleWindow.dispose();
+            }
+            textArea.append("Your health is " + player.getHealth() + "/" + player.getMaxHealth() + "\n");
+            textArea.append(op.getName() + " has " + op.getHealth() + " left\n");
         });
         useItem = new JButton("Use Bandage");
         useItem.addActionListener(e -> {
             if (player.hasItems()){
-                Items.get(0).consume(player, gameTextArea);
-                Items.remove(0);
-                gameTextArea.append(currentRoom.ToString());
+                player.items.get(0).consume(player, textArea);
+                player.items.remove(0);
             }
             else{
-                gameTextArea.append("You do not have any items");
+                textArea.append("You do not have any items");
             }
-            op.takeTurn(op, gameTextArea);
-            gameTextArea.append("You have " + player.getHealth() + "/" + player.getMaxHealth() + "\n");
-            gameTextArea.append(op.getName() + " has " + op.getHealth() + " left\n");
+            op.takeTurn(player, textArea);
+            if (!player.isAlive()) {
+                battleWindow.dispose();
+            }
+            if (!op.isAlive()){
+                battleWindow.dispose();
+            }
+            textArea.append("You have " + player.getHealth() + "/" + player.getMaxHealth() + "\n");
+            textArea.append(op.getName() + " has " + op.getHealth() + " left\n");
         });
         createItem = new JButton("Create Bandage");
         createItem.addActionListener(e -> {
-            player.obtain(new bandage());
-            op.takeTurn(op, gameTextArea);
-            gameTextArea.append("You have " + player.getHealth() + "/" + player.getMaxHealth() + "\n");
-            gameTextArea.append(op.getName() + " has " + op.getHealth() + " left\n");
+            player.obtain(new bandage(), textArea);
+            op.takeTurn(player, textArea);
+            if (!player.isAlive()) {
+                battleWindow.dispose();
+            }
+            if (!op.isAlive()){
+                battleWindow.dispose();
+            }
+            textArea.append("You have " + player.getHealth() + "/" + player.getMaxHealth() + "\n");
+            textArea.append(op.getName() + " has " + op.getHealth() + " left\n");
         });
-        gameTextArea.append("You have " + player.getHealth() + "/" + player.getMaxHealth() + "\n");
-        gameTextArea.append(op.getName() + " has " + op.getHealth() + " left\n");
 
+        battleWindow.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosed(WindowEvent e) {
+                
+            }
+        });
+        textArea.append(player.toString());
+        textArea.append(op.toString());
         Container gamePane = battleWindow.getContentPane();
         gamePane.setLayout(new BorderLayout());
         gamePane.add(scroll, BorderLayout.CENTER);
@@ -293,7 +323,6 @@ public class GameWindow extends JFrame {
         gamePane.add(buttonPannel, BorderLayout.SOUTH);
         battleWindow.pack();
         battleWindow.setVisible(true);
-
 
 
 
@@ -485,56 +514,48 @@ public class GameWindow extends JFrame {
             NPCS.get(i).levelingUp();
         }
     }
-    public void NPCSBattleSet(){
+    public void NPCSBattleSet(JTextArea gameTextArea){
         if (currentRoom.hasNPC() == 1){
             int NpcChoice = rand.nextInt(12);
-            gameTextArea.append(NPCS.get(NpcChoice).toString());
-            enterCombat(NPCS.get(NpcChoice), gameTextArea);
-            if (player.isAlive()){
-                NPCS.get(NpcChoice).modifyHealth(1000);
-                gameTextArea.append(NPCS.get(NpcChoice).getName() + " has died\n");
-                int NPCdespawn = rand.nextInt(2)+1;
-                if (NPCdespawn == 1){
-                    gameTextArea.append("There are no more zombies in here for now.\n");
-                    currentRoom.removeNPC();
+            battleWindow(NPCS.get(NpcChoice));
+                if (!NPCS.get(NpcChoice).isAlive()){
+                    NPCS.get(NpcChoice).modifyHealth(1000);
+                    gameTextArea.append(NPCS.get(NpcChoice).getName() + " has died\n");
+                    int NPCdespawn = rand.nextInt(2)+1;
+                    if (NPCdespawn == 1){
+                        gameTextArea.append("There are no more zombies in here for now.\n");
+                        currentRoom.removeNPC();
+                    }
+                    if (NPCdespawn == 2){
+                        gameTextArea.append("Theres another zombie in here. Fuck.\n");
+                        currentRoom.hasNPC();
+                    }
+                    if (currentRoom.hasItem() == 1) {
+                        gameTextArea.append("You have picked up an item. Look in your inventory during your next fight to see what it is.\n");
+                        int randItem = rand.nextInt(4);
+                        player.obtain(Items.get(randItem), gameTextArea);
+                        currentRoom.removeItem();
+                    }
+                    if (currentRoom.hasWeapon() == 1){
+                        gameTextArea.append("You have found a weapon.\n");
+                        int randWeapon = rand.nextInt(5);
+                        weapons.get(randWeapon).pickUpItem(player);
+                        currentRoom.removeWeapon();
+                    }
                 }
-                if (NPCdespawn == 2){
-                    gameTextArea.append("Theres another zombie in here. Fuck.\n");
-                    currentRoom.hasNPC();
+                if (!player.isAlive()){
+                    if (NPCS.get(NpcChoice).getName() == "Walker"){
+                        gameTextArea.append("A walker has killed you. You were never destined to make if far. Get better.");
+                    }
+                    else if(NPCS.get(NpcChoice).getName() == "Creeper") {
+                        gameTextArea.append("A creeper has killed you. This is not minecraft do better");
+                    }
+                    else {
+                        gameTextArea.append("You died to a Sprinter. Should have ran track in highschool.");
+                    }
+                    new GameWindow();
                 }
-                if (currentRoom.hasItem() == 1) {
-                    gameTextArea.append("You have picked up an item. Look in your inventory during your next fight to see what it is.\n");
-                    int randItem = rand.nextInt(4);
-                    player.obtain(Items.get(randItem));
-                    currentRoom.removeItem();
-                }
-                if (currentRoom.hasWeapon() == 1){
-                    gameTextArea.append("You have found a weapon.\n");
-                    int randWeapon = rand.nextInt(5);
-                    weapons.get(randWeapon).pickUpItem(player);
-                    currentRoom.removeWeapon();
-                }
-            }
-            else {
-                if (NPCS.get(NpcChoice).getName() == "Walker"){
-                    gameTextArea.append("A walker has killed you. You were never destined to make if far. Get better.");
-                }
-                else if(NPCS.get(NpcChoice).getName() == "Creeper") {
-                    gameTextArea.append("A creeper has killed you. This is not minecraft do better");
-                }
-                else {
-                    gameTextArea.append("You died to a Sprinter. Should have ran track in highschool.");
-                }
-                dispose();
-                try {
-                    newGameWindow();
-                } catch (FileNotFoundException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-                
-            }
-            System.out.println(currentRoom.ToString());
+                    
             }
         if (currentRoom.hasNPC() == 4 && !currentRoom.hasCure()){
             if (currentRoom.getRoomNumber() == 10){
@@ -601,8 +622,6 @@ public class GameWindow extends JFrame {
     
     public static void main(String[] args) throws FileNotFoundException{
        GameWindow game = new GameWindow();
-       NPC npc = new NPC("Jared", 1000, 0, 15);
-       game.battleWindow(npc);
 
         
     }

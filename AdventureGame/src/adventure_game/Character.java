@@ -17,7 +17,7 @@ abstract public class Character{
     private String name;
 
 
-    private ArrayList<Consumable> items;
+    ArrayList<Consumable> items;
 
     // Character Conditions:
     private int turnsVulnerable; // number of turns Character is vulnerable
@@ -129,7 +129,7 @@ abstract public class Character{
      */
     public void attack(Character other, JTextArea output){
         if(other.isInvincible()){
-            output.append(this.name + " is unable to attack!" + other.name + "\n");
+            output.append(this.name + " is unable to attack!\n");
             other.decreaseTurnsInvincible();
             return;
         }
@@ -280,9 +280,9 @@ abstract public class Character{
      * @param item of Consumable
      */
 
-    public void obtain(Consumable item){
+    public void obtain(Consumable item, JTextArea output){
         if (items.size() >= 10){
-            System.out.printf("You can only have 10 items at a time");
+            output.append("You can only have 10 items at a time\n");
             
         }
         else {
