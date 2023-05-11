@@ -297,17 +297,17 @@ abstract public class Character{
     public boolean hasItems(){
         return !items.isEmpty();
     }
-    public void levelModifier(){
+    public void levelModifier(JTextArea output){
         this.levelUpXp += 1;
         if (this.levelUpXp == 3){
             this.levelUpXp = 0;
             this.level += 1;
-            this.levelingUp();
+            this.levelingUp(output);
         }
         
 
     }
-    public abstract void levelingUp();
+    public abstract void levelingUp(JTextArea output);
 
     
 }

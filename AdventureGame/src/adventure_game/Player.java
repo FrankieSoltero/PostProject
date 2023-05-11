@@ -29,14 +29,15 @@ public class Player extends Character{
      * Whenever levelingUpXp is called it levels the player after 3 
      * kills. Modfies damage and health based on what level it is.
      */
-    public void levelingUp(){
+    public void levelingUp(JTextArea output){
         if (this.level == 1) {
             int damageTotal = (int) (this.baseDamage * (0.1));
             this.modifyDamage(damageTotal);
             int healthTotal = (int) (this.maxHealth * (0.1));
             this.maxHealth += healthTotal;
             this.modifyHealth(this.maxHealth);
-            System.out.printf("You have leveled up. you are now level %s\nYour health is %s\nYour damage is %s\n",this.level,this.getHealth(),this.baseDamage);
+            output.append("You have level up. you are now level " + this.level + "\nYour health is " + this.getHealth() + "\nYour damage is " + this.baseDamage + "\n");
+
         }
         else if (this.level == 2) {
             int damageTotal = (int) (this.baseDamage * (0.1));
@@ -44,7 +45,8 @@ public class Player extends Character{
             int healthTotal = (int) (this.maxHealth * (0.25));
             this.maxHealth += healthTotal;
             this.modifyHealth(this.maxHealth);
-            System.out.printf("You have leveled up. you are now level %s\nYour health is %s\nYour damage is %s\n",this.level,this.getHealth(),this.baseDamage);
+            output.append("You have level up. you are now level " + this.level + "\nYour health is " + this.getHealth() + "\nYour damage is " + this.baseDamage + "\n");
+            
         }
         else if (this.level == 3) {
             int damageTotal = (int) (this.baseDamage * (0.1));
@@ -52,7 +54,7 @@ public class Player extends Character{
             int healthTotal = (int) (this.maxHealth * (0.25));
             this.maxHealth += healthTotal;
             this.modifyHealth(this.maxHealth);
-            System.out.printf("You have leveled up. you are now level %s\nYour health is %s\nYour damage is %s\n",this.level,this.getHealth(),this.baseDamage);
+            output.append("You have level up. you are now level " + this.level + "\nYour health is " + this.getHealth() + "\nYour damage is " + this.baseDamage + "\n");
         }
         else if (this.level == 4) {
             int damageTotal = (int) (this.baseDamage * (0.1));
@@ -60,7 +62,7 @@ public class Player extends Character{
             int healthTotal = (int) (this.maxHealth * (0.25));
             this.maxHealth += healthTotal;
             this.modifyHealth(this.maxHealth);
-            System.out.printf("You have leveled up. you are now level %s\nYour health is %s\nYour damage is %s\n",this.level,this.getHealth(),this.baseDamage);
+            output.append("You have level up. you are now level " + this.level + "\nYour health is " + this.getHealth() + "\nYour damage is " + this.baseDamage + "\n");
         }
         else if (this.level == 5) {
             int damageTotal = (int) (this.baseDamage * (0.1));
@@ -68,7 +70,7 @@ public class Player extends Character{
             int healthTotal = (int) (this.maxHealth * (0.25));
             this.maxHealth += healthTotal;
             this.modifyHealth(this.maxHealth);
-            System.out.printf("You have leveled up. you are now level %s\nYour health is %s\nYour damage is %s\n",this.level,this.getHealth(),this.baseDamage);
+            output.append("You have level up. you are now level " + this.level + "\nYour health is " + this.getHealth() + "\nYour damage is " + this.baseDamage + "\n");
         }
         else {
             int damageTotal = (int) (this.baseDamage * (0.1));
@@ -76,7 +78,7 @@ public class Player extends Character{
             int healthTotal = (int) (this.maxHealth * (0.25));
             this.maxHealth += healthTotal;
             this.modifyHealth(this.maxHealth);
-            System.out.printf("You have leveled up. you are now level %s\nYour health is %s\nYour damage is %s\n",this.level,this.getHealth(),this.baseDamage);
+            output.append("You have level up. you are now level " + this.level + "\nYour health is " + this.getHealth() + "\nYour damage is " + this.baseDamage + "\n");
         }
     }
 }

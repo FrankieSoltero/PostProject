@@ -34,7 +34,7 @@ public class NPC extends Character{
      * Whenever levelingUpXp is called it levels the player after 3 
      * kills. Modfies damage and health based on what level it is.
      */
-    public void levelingUp(){
+    public void levelingUp(JTextArea output){
         int i;
         for (i = 0; i < this.level; ++i){
             int damageModif = (int) (this.baseDamage * 0.1);

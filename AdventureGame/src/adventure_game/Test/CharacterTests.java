@@ -91,15 +91,15 @@ public class CharacterTests{
     void testLeveling(){
         assertTrue(c.getMaxHealth() == 100);
         assertTrue(c.getBaseDamage() == 10);
-        c.levelModifier();
-        c.levelModifier();
-        c.levelingUp();
+        c.levelModifier(output);
+        c.levelModifier(output);
+        c.levelingUp(output);
         assertTrue(c.getMaxHealth() != 100);
         assertTrue(c.getMaxHealth() == c.getHealth());
         assertTrue(c.getBaseDamage() != 10);
         assertTrue(b.getMaxHealth() == 100);
         assertTrue(b.getBaseDamage() == 10);
-        b.levelingUp();
+        b.levelingUp(output);
         assertTrue(b.getHealth() != 100);
         assertTrue(b.getBaseDamage() != 10);
     }

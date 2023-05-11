@@ -223,7 +223,7 @@ public class GameWindow extends JFrame {
     }
     public void battleWindow(NPC op){
         battleWindow = new JFrame(player.getName() + " vs " + op.getName() + "\n");
-        
+        battleWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         textArea = new JTextArea(20,60);
         textArea.setEditable(false);
         JScrollPane scroll = new JScrollPane(textArea);
@@ -235,7 +235,7 @@ public class GameWindow extends JFrame {
             if (!player.isAlive()) {
                 battleWindow.dispose();
             }
-            if (op.getHealth() <= player.getBaseDamage()){
+            if (op.getHealth() <= 1){
                 battleWindow.dispose();
             }
             textArea.append("Your health is " + player.getHealth() + "/" + player.getMaxHealth() + "\n");
@@ -248,7 +248,7 @@ public class GameWindow extends JFrame {
             if (!player.isAlive()) {
                 battleWindow.dispose();
             }
-            if (op.getHealth() <= player.getBaseDamage()){
+            if (op.getHealth() <= 1){
                 battleWindow.dispose();
             }
             textArea.append("Your health is " + player.getHealth() + "/" + player.getMaxHealth() + "\n");
@@ -259,7 +259,7 @@ public class GameWindow extends JFrame {
             if (player.hasItems()){
                 player.items.get(0).consume(player, textArea);
                 player.items.remove(0);
-                op.takeTurn(op, gameTextArea);
+                op.takeTurn(player, textArea);
             }
             else{
                 textArea.append("You do not have any items. Choose another option");
@@ -267,7 +267,7 @@ public class GameWindow extends JFrame {
             if (!player.isAlive()) {
                 battleWindow.dispose();
             }
-            if (op.getHealth() <= player.getBaseDamage()){
+            if (op.getHealth() <= 1){
                 battleWindow.dispose();
             }
             textArea.append("You have " + player.getHealth() + "/" + player.getMaxHealth() + "\n");
@@ -280,7 +280,7 @@ public class GameWindow extends JFrame {
             if (!player.isAlive()) {
                 battleWindow.dispose();
             }
-            if (op.getHealth() <= player.getBaseDamage()){
+            if (op.getHealth() <= 1){
                 battleWindow.dispose();
             }
             textArea.append("You have " + player.getHealth() + "/" + player.getMaxHealth() + "\n");
@@ -292,6 +292,7 @@ public class GameWindow extends JFrame {
             public void windowClosed(WindowEvent e) {
                 if (currentRoom.hasNPC() == 1){
                     if (player.isAlive()){
+                        player.levelModifier(gameTextArea);
                         NPCS.get(NpcChoice).modifyHealth(1000);
                         gameTextArea.append(NPCS.get(NpcChoice).getName() + " has died\n");
                         int NPCdespawn = rand.nextInt(2)+1;
@@ -325,7 +326,7 @@ public class GameWindow extends JFrame {
                         else {
                             gameTextArea.append("You died to a Sprinter. Should have ran track in highschool.");
                         }
-                        battleWindow.dispose();
+                        gameWindow.dispose();
                         new GameWindow();
                         }
                             
@@ -334,14 +335,14 @@ public class GameWindow extends JFrame {
                     if (currentRoom.getRoomNumber() == 10){
                         if (player.isAlive()){
                             gameTextArea.append("You have killed a boss. Good job you level up.\n");
-                            player.levelModifier();
-                            player.levelModifier();
-                            player.levelModifier();
+                            player.levelModifier(gameTextArea);
+                            player.levelModifier(gameTextArea);
+                            player.levelModifier(gameTextArea);
                             gameTextArea.append(currentRoom.ToString());
                         }
                         else {
                             gameTextArea.append("You have lost to " + NPCS.get(12).getName() + " Get better.\n");
-                            battleWindow.dispose();
+                            gameWindow.dispose();
                             new GameWindow();
                             
                         }
@@ -349,14 +350,14 @@ public class GameWindow extends JFrame {
                     else if (currentRoom.getRoomNumber() == 19){
                         if (player.isAlive()){
                             gameTextArea.append("You have killed a boss. Good job you level up.\n");
-                            player.levelModifier();
-                            player.levelModifier();
-                            player.levelModifier();
+                            player.levelModifier(gameTextArea);
+                            player.levelModifier(gameTextArea);
+                            player.levelModifier(gameTextArea);
                             gameTextArea.append(currentRoom.ToString());
                         }
                         else {
                             gameTextArea.append("You have lost to " + NPCS.get(13).getName() + " Take an L and move on.\n");
-                            battleWindow.dispose();
+                            gameWindow.dispose();
                             new GameWindow();
                             
                         }
@@ -366,14 +367,14 @@ public class GameWindow extends JFrame {
                         enterCombat(NPCS.get(14), gameTextArea);
                         if (player.isAlive()){
                             gameTextArea.append("You have killed a boss. Good job you level up.\n");
-                            player.levelModifier();
-                            player.levelModifier();
-                            player.levelModifier();
+                            player.levelModifier(gameTextArea);
+                            player.levelModifier(gameTextArea);
+                            player.levelModifier(gameTextArea);
                             gameTextArea.append(currentRoom.ToString());
                         }
                         else {
                             gameTextArea.append("You have lost to " + NPCS.get(14).getName() + " Take an L and move on.\n");
-                            battleWindow.dispose();
+                            gameWindow.dispose();
                             new GameWindow();
                             
                         }
@@ -489,7 +490,7 @@ public class GameWindow extends JFrame {
             if(!opponent.isAlive()){
                 output.append(opponent.getName() + " has gotten fucking merked");
                 
-                player.levelModifier();
+                player.levelModifier(gameTextArea);
                 break;
             }
 
@@ -597,7 +598,7 @@ public class GameWindow extends JFrame {
         NPCS.add(Faucci);
         int i;
         for (i = 0; i < NPCS.size(); ++i){
-            NPCS.get(i).levelingUp();
+            NPCS.get(i).levelingUp(gameTextArea);
         }
     }
     public void NPCSBattleSet(JTextArea gameTextArea){
