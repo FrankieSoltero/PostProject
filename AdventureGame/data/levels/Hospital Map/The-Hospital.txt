@@ -1,4 +1,4 @@
-# The Hospital, with 11 rooms
+# The Hospital, with 25 rooms
 # Author Francisco Soltero
 25
 0: Hospital Entrance: This is the blistering cold of northern alaska, its snowing and you are prepared to enter the Hospital. To the east there is a small dark room. To the south there is a Dark Mysterious hallway.

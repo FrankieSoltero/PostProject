@@ -37,7 +37,7 @@ public class bandage implements Consumable {
 
         if (owner.getHealth() >= hitPointsfromMax) {
             hitPoints = 0;
-            output.append("You are above " + hitPointsfromMax + " therefore you do not heal\n.");
+            output.append("You are above " + hitPointsfromMax + " therefore you do not heal\n");
         }
         owner.modifyHealth(hitPoints);
         output.append("You heal for " + hitPoints + " points, back up to " + owner.getHealth() + "/" + owner.getMaxHealth() + "\n");

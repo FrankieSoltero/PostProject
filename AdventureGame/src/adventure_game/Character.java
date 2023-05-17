@@ -158,7 +158,7 @@ abstract public class Character{
     public void defend(Character other, JTextArea output){
         double chance = GameWindow.rand.nextDouble();
         if(chance <=0.75){
-            output.append(this.getName() + " blocks " + other.getName() + " attack and is not invincible for 1 turn!\n");
+            output.append(this.getName() + " blocks " + other.getName() + " attack and is now invincible for 1 turn!\n");
             this.setAsInvincible(1);
             this.setTempDamageBuff(2.0);
         } else {

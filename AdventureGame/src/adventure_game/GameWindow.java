@@ -33,19 +33,23 @@ public class GameWindow extends JFrame {
     private JButton button4;
     private JButton button5;
     private JButton button6;
+    private JButton button7;
+    private JButton loadGame;
     private JButton attack;
     private JButton defend;
     private JButton useItem;
     private JButton createItem;
     private JButton newGame;
-    private Room currentRoom;
+    public Room currentRoom;
     private ArrayList<Room> roomMap = new ArrayList<>();
     private ArrayList<NPC> NPCS = new ArrayList<>();
     private ArrayList<Weapons> weapons = new ArrayList<>();
     public int choice = 0;
     public int NpcChoice;
+    public static Player savedPlayer;
+    public static Room savedRoom;
     
-    private Player player = new Player("Mick",150, 0, 75);
+    public Player player = new Player("Mick",150, 0, 75);
     public static Random rand = new Random();
     
 
@@ -82,6 +86,18 @@ public class GameWindow extends JFrame {
         };
         
         newGame = new JButton("New Game");
+        loadGame = new JButton("Load Game");
+        loadGame.addActionListener(e -> {
+            dispose();
+            try {
+                player = GameWindow.loadPlayer();
+                currentRoom = GameWindow.loadRoom();
+                newGameWindow();
+            } catch (FileNotFoundException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
+        });
         newGame.addActionListener(e -> {
             dispose();
             try {
@@ -103,6 +119,7 @@ public class GameWindow extends JFrame {
         buttonConstraints.gridy = 0;
 
         panel.add(newGame, buttonConstraints);
+        panel.add(loadGame, buttonConstraints);
         //buttonConstraints.gridy = 1;
         //add(loadGame,buttonConstraints);
         setContentPane(panel);
@@ -124,7 +141,6 @@ public class GameWindow extends JFrame {
                 readMap("PostProject/AdventureGame/data/levels/Hospital Map/The-Hospital.txt", roomMap);
         }
         gameWindow = new JFrame("Covid, The Zombie Apocolypse");
-        currentRoom = roomMap.get(0);
 
         
         gameWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -195,6 +211,11 @@ public class GameWindow extends JFrame {
             player.obtain(new bandage(),gameTextArea);
             NPCSBattleSet(gameTextArea);
         });
+        button7 = new JButton("Save Game");
+        button7.addActionListener(e -> {
+            GameWindow.saveGame(currentRoom, player);
+            gameTextArea.append("Your Game has been Saved\n");
+        });
         // Add components to the gameWindow
         Container gamePane = gameWindow.getContentPane();
         gamePane.setLayout(new BorderLayout());
@@ -207,6 +228,7 @@ public class GameWindow extends JFrame {
         buttonPannel.add(button4);
         buttonPannel.add(button5);
         buttonPannel.add(button6);
+        buttonPannel.add(button7);
 
         gamePane.add(buttonPannel, BorderLayout.SOUTH);
 
@@ -480,6 +502,7 @@ public class GameWindow extends JFrame {
             count++;
         }
         scnr.close();
+        currentRoom = roomMap.get(0);
         
     }
     public void enterCombat(NPC opponent, JTextArea output){
@@ -576,8 +599,8 @@ public class GameWindow extends JFrame {
         NPC Sprinter2 = new NPC("Sprinter", 500, level, 25);
         level = rand.nextInt(6);
         NPC Sprinter3 = new NPC("Sprinter", 500, level, 25);
-        NPC HiveMind = new NPC("HiveMind",1000,6,70);
-        NPC Faucci = new NPC("Faucci",20000,20,150);
+        NPC HiveMind = new NPC("HiveMind",1000,6,30);
+        NPC Faucci = new NPC("Faucci",20000,20,50);
         NPC ZombieNest = new NPC("Zombie Nest",5000,10,80);
         NPC RatKing = new NPC("RatKing",7500,15,100);
         NPCS.add(Walker);
@@ -622,6 +645,16 @@ public class GameWindow extends JFrame {
         if (currentRoom.hasNPC() == 4 && currentRoom.hasCure()) {
             battleWindow(NPCS.get(15));
         }
+    }
+    public static void saveGame(Room room, Player player) {
+            savedRoom = room;
+            savedPlayer = player;
+    }
+    public static Room loadRoom(){
+        return savedRoom;
+    }
+    public static Player loadPlayer(){
+        return savedPlayer;
     }
     
     public static void main(String[] args) throws FileNotFoundException{

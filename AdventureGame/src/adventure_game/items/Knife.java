@@ -32,7 +32,7 @@ public class Knife implements Weapons {
         else if (level == 3) {
             damagePoints = level * 5;
             owner.modifyDamage(damagePoints);
-            System.out.printf("You have picked up a level 3 knife. Your damage has increased by %d hitpoints, your total damage is now %d.", damagePoints, owner.getBaseDamage());
+            output.append("You have picked up a level 3 knife. Your damage has increased by " + damagePoints + " hitpoints, your total damage is now " + owner.getBaseDamage() + "\n");
         }
         else if (level == 4) {
             damagePoints = level * 5;
@@ -50,7 +50,7 @@ public class Knife implements Weapons {
 
 
     private int calculateKnifeLevel() {
-        int p = GameWindow.rand.nextInt(5);
+        int p = GameWindow.rand.nextInt(6);
         return p;
     }
 }
