@@ -15,11 +15,14 @@ public class bandage implements Consumable {
      * @param owner of type Character
      */
    
-    private int calculateHealing(){
+    private int calculateHealing(Character owner){
         // Equivalent to rolling 4d4 + 4
         // sum up four random values in the range [1,4] and
         // add 4 to that.
         int points = GameWindow.rand.nextInt(40)+51;
+        if (owner.getLevel() > 9) {
+            points = GameWindow.rand.nextInt(121) + 80;
+        }
         return points;
     }
     
@@ -32,7 +35,7 @@ public class bandage implements Consumable {
      * @param owner of type Character
      */
     public void consume(Character owner, JTextArea output) {
-        int hitPoints = calculateHealing();
+        int hitPoints = calculateHealing(owner);
         int hitPointsfromMax = owner.getMaxHealth() - 20;
 
         if (owner.getHealth() >= hitPointsfromMax) {

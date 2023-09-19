@@ -287,6 +287,7 @@ abstract public class Character{
         }
         else {
             items.add(item);
+            output.append("Bandages: " + items.size() + "\n");
         }
     }
     /**

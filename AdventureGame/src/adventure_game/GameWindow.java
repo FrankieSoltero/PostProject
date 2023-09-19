@@ -3,6 +3,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -49,7 +50,7 @@ public class GameWindow extends JFrame {
     public static Player savedPlayer;
     public static Room savedRoom;
     
-    public Player player = new Player("Mick",150, 0, 75);
+    public static Player player = new Player("Mick",150, 0, 75);
     public static Random rand = new Random();
     
 
@@ -90,8 +91,40 @@ public class GameWindow extends JFrame {
         loadGame.addActionListener(e -> {
             dispose();
             try {
-                player = GameWindow.loadPlayer();
-                currentRoom = GameWindow.loadRoom();
+                switch(choice){
+                    case 0:
+                        readMap("PostProject/AdventureGame/data/levels/Hospital Map/The-Hospital.txt", roomMap);
+                        level1();
+                        createNPCS1();
+                        createItems();
+                    case 1:
+                        readMap("PostProject/AdventureGame/data/levels/Hospital Map/The-Hospital.txt", roomMap);
+                    }
+            }
+            catch (FileNotFoundException e1) {
+                e1.printStackTrace();
+            }
+            try {
+                File save = new File("PostProject/AdventureGame/src/adventure_game/SaveFile.txt");
+                Scanner E = new Scanner(save);
+                if (save.length() > 0){
+                    if(E.hasNextLine()){
+                        JTextArea tempGameTextArea = new JTextArea(20,50);
+                        String line = E.nextLine();
+                        line.trim();
+                        String[] savedFileInfo = line.split(":");
+                        int playerLevel = Integer.parseInt(savedFileInfo[0]) * 3;
+                        for (int i = 0; i <= playerLevel; i++){
+                                GameWindow.player.levelModifier(tempGameTextArea);
+                         }
+                        int savedRoom = Integer.parseInt(savedFileInfo[1]);
+                        currentRoom = roomMap.get(savedRoom);
+                    }
+                    else {
+                        currentRoom = roomMap.get(0);
+                    }
+                }
+                E.close();
                 newGameWindow();
             } catch (FileNotFoundException e1) {
                 // TODO Auto-generated catch block
@@ -101,13 +134,21 @@ public class GameWindow extends JFrame {
         newGame.addActionListener(e -> {
             dispose();
             try {
+                switch(choice){
+                    case 0:
+                        readMap("PostProject/AdventureGame/data/levels/Hospital Map/The-Hospital.txt", roomMap);
+                        level1();
+                        createNPCS1();
+                        createItems();
+                    case 1:
+                        readMap("PostProject/AdventureGame/data/levels/Hospital Map/The-Hospital.txt", roomMap);
+                }
                 newGameWindow();
             } catch (FileNotFoundException e1) {
                 // TODO Auto-generated catch block
                 e1.printStackTrace();
             }
         });
-        //loadGame = new JButton("Load Game");
         
         setLayout(new GridBagLayout());
         setSize(400, 400);
@@ -131,15 +172,6 @@ public class GameWindow extends JFrame {
     public void newGameWindow() throws FileNotFoundException {
         // Creates the Frame and sets the default closer
         // operator to the red exit button.
-        switch(choice){
-            case 0:
-                readMap("PostProject/AdventureGame/data/levels/Hospital Map/The-Hospital.txt", roomMap);
-                level1();
-                createNPCS1();
-                createItems();
-            case 1:
-                readMap("PostProject/AdventureGame/data/levels/Hospital Map/The-Hospital.txt", roomMap);
-        }
         gameWindow = new JFrame("Covid, The Zombie Apocolypse");
 
         
@@ -154,7 +186,7 @@ public class GameWindow extends JFrame {
         button1 = new JButton("North");
         button1.addActionListener(e -> {
             if (currentRoom.isRoomNorthNull()){
-                gameTextArea.append("You cannot go that way!");
+                gameTextArea.append("You cannot go that way!\n");
             }
             else {
                 currentRoom = currentRoom.getNorthRoom();
@@ -165,7 +197,7 @@ public class GameWindow extends JFrame {
         button2 = new JButton("South");
         button2.addActionListener(e -> {
             if (currentRoom.isRoomSouthNull()){
-                gameTextArea.append("You cannot go that way!");
+                gameTextArea.append("You cannot go that way!\n");
             }
             else{
                 currentRoom = currentRoom.getSouthRoom();
@@ -176,7 +208,7 @@ public class GameWindow extends JFrame {
         button3 = new JButton("West");
         button3.addActionListener(e -> {
             if (currentRoom.isRoomWestNull()){
-                gameTextArea.append("You cannot go that way!");
+                gameTextArea.append("You cannot go that way!\n");
             }
             else {
                 currentRoom = currentRoom.getWestRoom();
@@ -187,7 +219,7 @@ public class GameWindow extends JFrame {
         button4 = new JButton("East");
         button4.addActionListener(e -> {
             if (currentRoom.isRoomEastNull()){
-                gameTextArea.append("You cannot go that way!");
+                gameTextArea.append("You cannot go that way!\n");
             }
             else{
                 currentRoom = currentRoom.getEastRoom();
@@ -229,15 +261,17 @@ public class GameWindow extends JFrame {
         buttonPannel.add(button5);
         buttonPannel.add(button6);
         buttonPannel.add(button7);
+       // buttonPannel.add(button7);
 
         gamePane.add(buttonPannel, BorderLayout.SOUTH);
 
         gameWindow.pack();
         gameWindow.setVisible(true);
-        gameTextArea.append("General Should Knows\n1. Creating a bandage and using an item take a turn\n2. You can only carry 10 items at a time\n3. The game will tell you if theres another zombie and what you pick up\n4. Weapons are automatically picked up\n5. NPCS level randomly generate for each one\n6. Defending only stops damage for that turn. The NPC is then vulnerable for the next turn but can still hit you\n7. A message will pop up telling you if theres another zombie in the room.\nHappy Fighting survivor.\n\n");
+        gameTextArea.append("General Should Knows\n1. Creating a bandage and using an item take a turn\n2. You can only carry 10 items at a time\n3. The game will tell you if theres another zombie and what you pick up\n4. Weapons are automatically picked up\n5. NPCS level randomly generate for each one\n6. Defending only stops damage for that turn. The NPC is then vulnerable for the next turn but can still hit you\n7. A message will pop up telling you if theres another zombie in the room.\n8. At level 10 bandages begin to heal up to 200 points\nHappy Fighting survivor.\n\n");
         gameTextArea.append("It is a cold day in 2040. My name is Mick. Its been 20 years since the zombie apocalypse, it all began when covid had it's boom the \ndoctor got the symptoms very wrong. It was originally reported as a mild to severe cold, but then came its mutation. Suddenly people began to get agressive, then hungry, finally came the zombies.\nFirst it was so far everything seemed fine, 2 years later the world was nothing but a wasteland where the survivors are greatly outnumbered.\n 20 years later, here I am where the last reported government found a cure but was sadly overrun with zombies. I am the worlds only hope.\n\n");
         gameTextArea.append(player.toString());
         gameTextArea.append(currentRoom.ToString());
+
 
         
 
@@ -252,8 +286,8 @@ public class GameWindow extends JFrame {
 
         attack = new JButton("Attack");
         attack.addActionListener(e -> {
+            player.attack(op, gameTextArea);
             op.takeTurn(player, textArea);
-            player.attack(op, textArea);
             if (!player.isAlive()) {
                 battleWindow.dispose();
             }
@@ -356,6 +390,7 @@ public class GameWindow extends JFrame {
                 if (currentRoom.hasNPC() == 4 && !currentRoom.hasCure()){
                     if (currentRoom.getRoomNumber() == 10){
                         if (player.isAlive()){
+                            currentRoom.removeNPC();
                             gameTextArea.append("You have killed a boss. Good job you level up.\n");
                             player.levelModifier(gameTextArea);
                             player.levelModifier(gameTextArea);
@@ -371,6 +406,7 @@ public class GameWindow extends JFrame {
                     }
                     else if (currentRoom.getRoomNumber() == 19){
                         if (player.isAlive()){
+                            currentRoom.removeNPC();
                             gameTextArea.append("You have killed a boss. Good job you level up.\n");
                             player.levelModifier(gameTextArea);
                             player.levelModifier(gameTextArea);
@@ -388,6 +424,7 @@ public class GameWindow extends JFrame {
                         gameTextArea.append(NPCS.get(14).toString());
                         enterCombat(NPCS.get(14), gameTextArea);
                         if (player.isAlive()){
+                            currentRoom.removeNPC();
                             gameTextArea.append("You have killed a boss. Good job you level up.\n");
                             player.levelModifier(gameTextArea);
                             player.levelModifier(gameTextArea);
@@ -405,7 +442,9 @@ public class GameWindow extends JFrame {
                 }
                 if (currentRoom.hasNPC() == 4 && currentRoom.hasCure()) {
                     if (player.isAlive()){
+                        currentRoom.removeNPC();
                         gameTextArea.append("You have found the cure you win");
+                        gameWindow.dispose();
                         choice += 1;
                         new GameWindow();
                         
@@ -512,8 +551,11 @@ public class GameWindow extends JFrame {
             player.takeTurn(opponent, output);
             if(!opponent.isAlive()){
                 output.append(opponent.getName() + " has gotten fucking merked");
-                
-                player.levelModifier(gameTextArea);
+                if (opponent.getLevel() > player.getLevel() + 2) {
+                    player.levelModifier(output);
+                    player.levelModifier(output);
+                }
+                player.levelModifier(output);
                 break;
             }
 
@@ -601,8 +643,8 @@ public class GameWindow extends JFrame {
         NPC Sprinter3 = new NPC("Sprinter", 500, level, 25);
         NPC HiveMind = new NPC("HiveMind",1000,6,30);
         NPC Faucci = new NPC("Faucci",20000,20,50);
-        NPC ZombieNest = new NPC("Zombie Nest",5000,10,80);
-        NPC RatKing = new NPC("RatKing",7500,15,100);
+        NPC ZombieNest = new NPC("Zombie Nest",5000,10,50);
+        NPC RatKing = new NPC("RatKing",7500,15,50);
         NPCS.add(Walker);
         NPCS.add(Walker2);
         NPCS.add(Walker3);
@@ -647,14 +689,25 @@ public class GameWindow extends JFrame {
         }
     }
     public static void saveGame(Room room, Player player) {
-            savedRoom = room;
-            savedPlayer = player;
-    }
-    public static Room loadRoom(){
-        return savedRoom;
-    }
-    public static Player loadPlayer(){
-        return savedPlayer;
+            String saveFileName = "PostProject/AdventureGame/src/adventure_game/SaveFile.txt";
+            int savedRoom = room.getRoomNumber();
+            int savedPlayerLevel = player.getLevel();
+            try {
+                // Creates File Writer
+                FileWriter writer = new FileWriter(saveFileName);
+                writer.write(Integer.toString(savedPlayerLevel));
+                writer.write(":");
+                writer.write(Integer.toString(savedRoom));
+                writer.write("\n");
+                writer.close();
+                System.out.print("Room Saved");
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            
+            
     }
     
     public static void main(String[] args) throws FileNotFoundException{

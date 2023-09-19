@@ -17,7 +17,7 @@ public class Pistols implements Weapons {
         int damagePoints;
         
         if (level == 0) {
-            output.append("The pistol you found has no ammo. Get Better.");
+            output.append("The pistol you found has no ammo. Get Better.\n");
         }
         else if (level == 1) {
             damagePoints = level * 10;

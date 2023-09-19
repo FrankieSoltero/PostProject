@@ -17,7 +17,7 @@ public class AssaultRifle implements Weapons {
         int damagePoints;
         
         if (level == 0) {
-            output.append("The Assault Rifle you found has no ammo. Get Better.");
+            output.append("The Assault Rifle you found has no ammo. Get Better.\n");
         }
         else if (level == 1) {
             damagePoints = level * 10;
