@@ -75,7 +75,7 @@ public class Player extends Character{
         else {
             int damageTotal = (int) (this.baseDamage * (0.1));
             this.modifyDamage(damageTotal);
-            int healthTotal = (int) (this.maxHealth * (0.3));
+            int healthTotal = (int) (this.maxHealth * (0.275));
             this.maxHealth += healthTotal;
             this.modifyHealth(this.maxHealth);
             output.append("You have level up. you are now level " + this.level + "\nYour health is " + this.getHealth() + "\nYour damage is " + this.baseDamage + "\n");

@@ -1,6 +1,6 @@
 # The Hospital, with 25 rooms
 # Author Francisco Soltero
-25
+11
 0:Hospital Entrance:This is the blistering cold of northern alaska, its snowing and you are prepared to enter the Hospital. To the east there is a small dark room. To the south there is a Dark Mysterious hallway.
 1:Supply Room:You enter the dark room to realize its a supply room. You look around and see a weapon and item of some sort. You pick both up. The only exit is to the south which seems to be the Dark Hallway.
 2:Hallway: The hallway is dimly lit, and the roof seems to be intact. You quickly scan the area and notice there are 4 exits. To the South there seems to be a big bright room. To the west theres a door that says security personel only. To the east there seems to be a stairway. To the north is the supply room.
@@ -12,21 +12,7 @@
 8:Reasearch Center: As you enter you get that same errie feeling you had when in the General Surgeons Office, something is watching. You notice only two exits; To the north there is what seems to be another office, To the south there is the downstairs hallway.
 9:Chief of Reasearch Office: You enter assuming theres a zombie waiting for you because your luck with offices is bad. Your only exit is south back to the research center. 
 10:The Cure Laboratory: You open the door and step in a puddle of blood, and look up and see the something you thought was a myth. You must kill it to get to the cure. The only exit is south to the sewer.
-11:The Sewer Entrance: You follow the injured HiveMind as it runs away deep into the darkness of the sewer. It smells like shit, but you put on a mask and suddenly everything still smells like shit. Your exits are a dark loomy Shit Hallway west to the west, a dim Shit Hallway east to the east, and a weird glowing hallway to the south.
-12:Shit Hallway West: This hallway is just full of shit everywhere. There isnt much else besides a room to the west with a faint label saying 2A, and to the east is the Sewer Entrance.
-13:Shit Hallway East: This hallway is the same as the one to the west, shit everywhere. The hallway continues around a bend to the east. To the west is the sewer entrance.
-14:Infested Hallway: You enter a heavoly infested hallway, the covid has attached itself to the walls with some spore looking things, You reach into your bag and put on your thin blue mask. Your exits: To the east a dark room with the label 4A, To the west a dark room with the label 3A, to the south a bunkerlike entrance, to the north is the sewer entrance.
-15:Shit Hallway Continued: There wasn't much to the hallway. You see a weapon smeared in shit, and the only exits are West to the Shit Hallway East, or south to a Control Room.
-16:Supply Room 2A: You open the door and see a dead body with no head. Gruesome but you notice a weapon in his hand. Your only exit is east to Shit Hallway west.
-17:Bunker Entrance: You enter what seems to be a doomsday Bunker, but instead it is infested with zombie goup everywhere. You Must stay on edge. Your only exits are south to a door named RatKing, north back to the infested hallway, or west to a control Room of some sort.
-18:Control Room: You enter and look through the window and notice that to the east there seems to be a really fucking big zombie. To the north theres Shit Hallway East continued.
-19:Zombie Nest: You walk in with massive balls for willingly doing this to yourself. Your only exit is west to the controll room, if you survive.
-20:Supply Room 3A: This is a supply room amd theres no zombies in here. Your only exit is East to the Infested Hallway.
-21:Supply Room 4A: This is a supply room and theres no zombies in here. Your only exit is west to the Infested Hallway.
-22:RatKing: You walk in and see a monstrosity of a zombie. Its 10 zombies merged into one zombie. Your only exit is north to the bunker entrance if you survive.
-23:Bunker Control Room: You walk in and see another window this time you see the cure inside a room named Fauccis lair with a medium sized zombie inside. Your only exits are west to Fauccis Lair, and East to the bunker entrance.
-24:Fauccis Lair: You walk in and see Faucci as a zombie holding the cure. You must kill him to obtain the cure. You have no exits goodluck.
-#  E   N   W   S
+# E    N   W   S
 0: 1: -1:  1:  2:
 1:-1: -1: -1:  2:
 2: 5:  1:  3:  6:
@@ -37,18 +23,4 @@
 7:-1:  8:  5: 10:
 8:-1:  9: -1:  7:
 9:-1: -1: -1:  8:
-10:-1:-1: -1: 11:
-11:13:-1: 12: 14:
-12:11:-1: 16: -1:
-13:15:-1: 11: -1:
-14:21:11: 20: 17:
-15:-1:-1: 13: 18:
-16:12:-1: -1: -1:
-17:-1:14: 23: 22:
-18:19:15: -1: -1:
-19:-1:-1: 18: -1:
-20:14:-1: -1: -1:
-21:-1:-1: 14: -1:
-22:-1:17: -1: -1:
-23:17:-1: 24: -1:
-24:-1:-1: -1: -1:
+10:-1:-1: -1: -1:
