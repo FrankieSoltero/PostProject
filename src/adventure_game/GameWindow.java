@@ -69,7 +69,7 @@ public class GameWindow extends JFrame {
             // Use a method to load the image to ensure it is loaded before paintComponent is called
             private void loadImage() {
                 try {
-                    backgroundImage = ImageIO.read(new File("PostProject/AdventureGame/data/levels/Hospital Map/HE.png"));
+                    backgroundImage = ImageIO.read(new File("AdventureGame\\data\\levels\\Hospital Map\\HE.png"));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -93,19 +93,19 @@ public class GameWindow extends JFrame {
             try {
                 switch(choice){
                     case 0:
-                        readMap("PostProject/AdventureGame/data/levels/Hospital Map/The-Hospital.txt", roomMap);
+                        readMap("AdventureGame\\src\\adventure_game\\SaveFile.txt", roomMap);
                         level1();
                         createNPCS1();
                         createItems();
                     case 1:
-                        readMap("PostProject/AdventureGame/data/levels/Hospital Map/The-Hospital.txt", roomMap);
+                        readMap("AdventureGame\\src\\adventure_game\\SaveFile.txt", roomMap);
                     }
             }
             catch (FileNotFoundException e1) {
                 e1.printStackTrace();
             }
             try {
-                File save = new File("PostProject/AdventureGame/src/adventure_game/SaveFile.txt");
+                File save = new File("AdventureGame\\src\\adventure_game\\SaveFile.txt");
                 Scanner E = new Scanner(save);
                 if (save.length() > 0){
                     if(E.hasNextLine()){
@@ -136,12 +136,12 @@ public class GameWindow extends JFrame {
             try {
                 switch(choice){
                     case 0:
-                        readMap("PostProject/AdventureGame/data/levels/Hospital Map/The-Hospital.txt", roomMap);
+                        readMap("AdventureGame\\data\\levels\\Hospital Map\\The-Hospital.txt", roomMap);
                         level1();
                         createNPCS1();
                         createItems();
                     case 1:
-                        readMap("PostProject/AdventureGame/data/levels/Hospital Map/The-Hospital.txt", roomMap);
+                        readMap("AdventureGame\\data\\levels\\Hospital Map\\The-Hospital.txt", roomMap);
                 }
                 newGameWindow();
             } catch (FileNotFoundException e1) {
