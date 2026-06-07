@@ -94,6 +94,14 @@ abstract public class Character{
         return this.baseDamage;
     }
     /**
+     * The damage actually used when this Character attacks. Defaults to the
+     * base damage; subclasses (Player) add equipped-weapon bonuses.
+     * @return the effective attack damage
+     */
+    public int getEffectiveDamage() {
+        return this.baseDamage;
+    }
+    /**
      * Get the Damage Buff for this Character
      * @return the damage buff as a double
      */
@@ -133,7 +141,7 @@ abstract public class Character{
         }
         double modifier = GameRandom.rand.nextDouble();
         modifier = (modifier*0.4) + 0.8;
-        int damage = (int)(this.baseDamage * modifier);
+        int damage = (int)(this.getEffectiveDamage() * modifier);
         // apply temporary damage buff, then reset it back to 1.0
         damage *= this.tempDamageBuff;
         this.tempDamageBuff = 1.0;
