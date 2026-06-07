@@ -1,0 +1,13 @@
++-----------[ BUNKER ENTRANCE ]------------------+          
+|  *goop*   *goop*      *goop*    *goop*  *goop* |          
+| ooze drips down the walls...  viscous and dark  |         
+| @  @   @    @   @    @    @    @   @    @   @  |          
+|                                                 |         
+|      +=========[ BLAST DOOR ]==========+        |         
+|      |#  AUTHORIZED PERSONNEL ONLY  ##|        |          
+|      |## WARNING: CONTAMINATION ZONE #|        |          
+|      |################################|        |          
+|      +====[ press ENTER to open ]====+         |          
+| *goop* ooze pools on the floor  *goop*  *goop* |          
+|#############################################    |         
++================================================-+         

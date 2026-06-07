@@ -7,7 +7,7 @@ description: Use when adding or editing a room in the PostProject hospital - aut
 
 A room needs two artifacts that MUST agree:
 
-## 1. Backdrop art -> assets/art/room<N>.txt
+## 1. Backdrop art -> assets/art/rooms/room<N>.txt
 - Width = viewport width (currently 60 columns).
 - Height <= viewport rows (currently 13: Scene rows 3-15).
 - ASCII only; space = transparent (player/enemy composite on top).
