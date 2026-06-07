@@ -19,7 +19,9 @@ public class ArtAssetTest {
     @Test
     void fromFileLoadsAsset() throws Exception {
         ArtAsset a = ArtAsset.fromFile("assets/art/player.txt");
-        assertTrue(a.height() >= 1);
-        assertTrue(a.width() >= 1);
+        assertEquals(5, a.height());
+        assertEquals(5, a.width());
+        // No BOM: first line begins with a real space, not U+FEFF.
+        assertEquals(' ', a.lines().get(0).charAt(0));
     }
 }

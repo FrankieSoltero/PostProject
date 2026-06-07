@@ -42,4 +42,24 @@ public class ScreenTest {
         s.blit(art, 0, 0);
         assertEquals("A#A", s.toLines()[0]);
     }
+
+    @Test
+    void blitAppliesOffset() {
+        Screen s = new Screen(4, 3);
+        s.clear();
+        ArtAsset art = ArtAsset.fromLines("X");
+        s.blit(art, 2, 1);
+        assertEquals('X', s.get(2, 1));
+        assertEquals(' ', s.get(0, 0));
+    }
+
+    @Test
+    void drawBoxDrawsCornersAndEdges() {
+        Screen s = new Screen(4, 3);
+        s.clear();
+        s.drawBox(0, 0, 4, 3);
+        assertEquals("+--+", s.toLines()[0]);
+        assertEquals("|  |", s.toLines()[1]);
+        assertEquals("+--+", s.toLines()[2]);
+    }
 }

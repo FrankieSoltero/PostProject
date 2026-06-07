@@ -37,6 +37,9 @@ public class Screen {
     }
 
     public char get(int x, int y) {
+        if (x < 0 || y < 0 || x >= width || y >= height) {
+            return ' ';
+        }
         return cells[y][x];
     }
 
