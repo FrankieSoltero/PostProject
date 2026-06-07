@@ -33,6 +33,12 @@ parity so it stays a coherent, testable, demoable milestone.
 - Save/load on the new UI.
 - The find-the-cure win sequence.
 - Sprite migration.
+- **Per-enemy animation choreography** (zombie lunge, hit-flashes, death/
+  collapse, idle bobs). Cleanly timing these to individual exchange events needs
+  an event/turn queue; the model currently resolves an exchange atomically. The
+  zombie *arts* are authored now (for rendering); only the player Attack and
+  Defend bursts are wired this increment. Per-enemy animation is a dedicated
+  follow-up.
 
 Boss rooms (10, 19, 22, 24) are **enterable but inert** this increment: entering
 logs a deferral hint (e.g. *"Something massive stirs in the dark… not yet."*)
@@ -152,10 +158,9 @@ the project standard; all `.txt` files **UTF-8 without BOM**.
 
 - **3 zombie arts** (`ascii-art`, 5×5): Walker, Creeper, Sprinter — distinct
   silhouettes. Saved under `assets/art/`.
-- **Animations** (`ascii-animation`), as `Animations` factory methods + unit
-  tests: per zombie a **lunge/attack**, a **hit-flash**, and a
-  **death/collapse**; plus a player **hit-flash** when damaged. (Player strike
-  already exists.)
+- **Player Defend animation** (`ascii-animation`), as an `Animations` factory
+  method + unit test: a short guard/brace burst, wired to the Defend action.
+  (The player attack burst already exists.)
 - **25 room backdrops** (`ascii-art` + `room-and-map`), under
   `assets/art/rooms/room<N>.txt`, each labeled with the room's name and matching
   its exits, sized to the viewport (≤13 rows, ≤60 cols).
