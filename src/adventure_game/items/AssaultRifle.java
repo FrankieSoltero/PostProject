@@ -3,7 +3,7 @@ package adventure_game.items;
 import javax.swing.JTextArea;
 
 import adventure_game.Character;
-import adventure_game.GameWindow;
+import adventure_game.GameRandom;
 
 public class AssaultRifle implements Weapons {
 
@@ -47,7 +47,7 @@ public class AssaultRifle implements Weapons {
 
     }
     private int calculateARLevel() {
-        int p = GameWindow.rand.nextInt(6);
+        int p = GameRandom.rand.nextInt(6);
         return p;
     }
 }

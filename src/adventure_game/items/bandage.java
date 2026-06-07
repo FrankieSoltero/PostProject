@@ -3,7 +3,7 @@ package adventure_game.items;
 import javax.swing.JTextArea;
 
 import adventure_game.Character;
-import adventure_game.GameWindow;
+import adventure_game.GameRandom;
  
 public class bandage implements Consumable {
 
@@ -19,9 +19,9 @@ public class bandage implements Consumable {
         // Equivalent to rolling 4d4 + 4
         // sum up four random values in the range [1,4] and
         // add 4 to that.
-        int points = GameWindow.rand.nextInt(40)+51;
+        int points = GameRandom.rand.nextInt(40)+51;
         if (owner.getLevel() > 9) {
-            points = GameWindow.rand.nextInt(121) + 80;
+            points = GameRandom.rand.nextInt(121) + 80;
         }
         return points;
     }

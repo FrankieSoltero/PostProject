@@ -133,7 +133,7 @@ abstract public class Character{
             other.decreaseTurnsInvincible();
             return;
         }
-        double modifier = GameWindow.rand.nextDouble();
+        double modifier = GameRandom.rand.nextDouble();
         modifier = (modifier*0.4) + 0.8;
         int damage = (int)(this.baseDamage * modifier);
         // apply temporary damage buff, then reset it back to 1.0
@@ -156,7 +156,7 @@ abstract public class Character{
      * @param other of type Character
      */
     public void defend(Character other, JTextArea output){
-        double chance = GameWindow.rand.nextDouble();
+        double chance = GameRandom.rand.nextDouble();
         if(chance <=0.75){
             output.append(this.getName() + " blocks " + other.getName() + " attack and is now invincible for 1 turn!\n");
             this.setAsInvincible(1);
