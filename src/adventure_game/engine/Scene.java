@@ -1,6 +1,7 @@
 package adventure_game.engine;
 
 import java.util.List;
+import java.util.Map;
 
 import adventure_game.GameState;
 import adventure_game.Player;
@@ -8,7 +9,8 @@ import adventure_game.Room;
 
 /**
  * Composes the whole Screen from GameState each redraw: HUD (top), viewport
- * (middle, where art and animation frames draw), and log (bottom).
+ * (middle, where the current room's backdrop, player, enemy, and any active
+ * animation frame draw), and log (bottom).
  */
 public class Scene {
     private static final int VIEW_TOP = 3;
@@ -21,15 +23,18 @@ public class Scene {
     private final int width;
     private final int height;
     private final ArtAsset playerArt;
-    private final ArtAsset walkerArt;
-    private final ArtAsset backdrop;
+    private final Map<String, ArtAsset> enemyArt;
+    private final ArtAsset enemyFallback;
+    private final RoomArt roomArt;
 
-    public Scene(int width, int height, ArtAsset playerArt, ArtAsset walkerArt, ArtAsset backdrop) {
+    public Scene(int width, int height, ArtAsset playerArt,
+                 Map<String, ArtAsset> enemyArt, ArtAsset enemyFallback, RoomArt roomArt) {
         this.width = width;
         this.height = height;
         this.playerArt = playerArt;
-        this.walkerArt = walkerArt;
-        this.backdrop = backdrop;
+        this.enemyArt = enemyArt;
+        this.enemyFallback = enemyFallback;
+        this.roomArt = roomArt;
     }
 
     public void render(Screen s, GameState state, AnimationFrame active) {
@@ -51,10 +56,11 @@ public class Scene {
         }
 
         // --- VIEWPORT ---
-        s.blit(backdrop, 0, VIEW_TOP);
+        s.blit(roomArt.forRoom(room.getRoomNumber()), 0, VIEW_TOP);
         s.blit(playerArt, PLAYER_X, PLAYER_Y);
         if (state.isInCombat() && state.getEnemy() != null) {
-            s.blit(walkerArt, ENEMY_X, PLAYER_Y);
+            ArtAsset ea = enemyArt.getOrDefault(state.getEnemy().getName(), enemyFallback);
+            s.blit(ea, ENEMY_X, PLAYER_Y);
         }
         if (active != null) {
             s.blit(active.getArt(), PLAYER_X + active.getDx(), STRIKE_Y + active.getDy());

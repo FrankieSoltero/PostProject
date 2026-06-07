@@ -2,10 +2,14 @@ package adventure_game.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.junit.jupiter.api.Test;
 
 import adventure_game.GameState;
 import adventure_game.engine.ArtAsset;
+import adventure_game.engine.RoomArt;
 import adventure_game.engine.Scene;
 import adventure_game.engine.Screen;
 
@@ -20,20 +24,26 @@ public class SceneTest {
         return false;
     }
 
+    private static Scene buildScene() {
+        ArtAsset player = ArtAsset.fromLines("  @  ", " /|\\ ", "  |  ", " / \\ ", "     ");
+        ArtAsset walker = ArtAsset.fromLines(" ___ ", "[o o]", " \\_/ ", " /|\\ ", " / \\ ");
+        Map<String, ArtAsset> enemyArt = new HashMap<>();
+        enemyArt.put("Walker", walker);
+        RoomArt roomArt = new RoomArt(ArtAsset.fromLines("ROOM-BACKDROP"));
+        return new Scene(60, 24, player, enemyArt, walker, roomArt);
+    }
+
     @Test
-    void renderDrawsRoomNameHpBarAndLog() throws Exception {
+    void renderShowsHudRoomNameHpAndLog() throws Exception {
         GameState gs = GameState.loadHospital();
-        ArtAsset player = ArtAsset.fromFile("assets/art/player.txt");
-        ArtAsset walker = ArtAsset.fromFile("assets/art/walker.txt");
-        ArtAsset backdrop = ArtAsset.fromFile("assets/art/room0.txt");
-        Scene scene = new Scene(60, 24, player, walker, backdrop);
+        Scene scene = buildScene();
         Screen screen = new Screen(60, 24);
 
         scene.render(screen, gs, null);
 
-        assertTrue(gridContains(screen, "Hospital Entrance")); // HUD name
-        assertTrue(gridContains(screen, "HP ["));              // HUD bar
-        assertTrue(gridContains(screen, "Lv."));               // HUD level
-        assertTrue(gridContains(screen, "Hospital Entrance."));   // log line
+        assertTrue(gridContains(screen, "Hospital Entrance"));
+        assertTrue(gridContains(screen, "HP ["));
+        assertTrue(gridContains(screen, "Lv."));
+        assertTrue(gridContains(screen, "Hospital Entrance."));
     }
 }
