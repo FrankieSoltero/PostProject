@@ -84,4 +84,15 @@ public class GameStateTest {
                 || gs.getMode() == GameState.Mode.COMBAT
                 || gs.getMode() == GameState.Mode.DEAD);
     }
+
+    @Test
+    void weaponAndBandageLootArePlacedAtLoad() throws Exception {
+        GameRandom.rand = new java.util.Random(1);
+        GameState gs = GameState.loadHospital();
+        // Entrance east -> room 1 (Supply Room), a weapon+bandage room (still
+        // populated, so loot is placed but not yet collected).
+        gs.move(Direction.EAST);
+        assertEquals(1, gs.getCurrentRoom().hasWeapon());
+        assertEquals(1, gs.getCurrentRoom().hasItem());
+    }
 }

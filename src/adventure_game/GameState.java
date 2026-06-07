@@ -17,6 +17,8 @@ public class GameState {
     private static final int[] REGULAR_ROOMS =
             {1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18, 20, 21};
     private static final int[] BOSS_ROOMS = {10, 19, 22, 24};
+    private static final int[] WEAPON_ROOMS = {1, 3, 6, 7, 8, 9, 11, 15, 16, 17, 20, 21};
+    private static final int[] ITEM_ROOMS = {1, 3, 4, 7, 11, 17, 20, 21};
 
     private Player player;
     private List<Room> rooms;
@@ -32,6 +34,7 @@ public class GameState {
         gs.player = new Player("Mick", 150, 0, 75);
         gs.mode = Mode.EXPLORE;
         gs.populateZombies();
+        gs.placeRoomLoot();
         gs.log.append("You stand at the Hospital Entrance. The cold bites.");
         return gs;
     }
@@ -42,6 +45,15 @@ public class GameState {
         }
         for (int i : BOSS_ROOMS) {
             rooms.get(i).setBossNPC();
+        }
+    }
+
+    private void placeRoomLoot() {
+        for (int i : WEAPON_ROOMS) {
+            rooms.get(i).setWeapon();
+        }
+        for (int i : ITEM_ROOMS) {
+            rooms.get(i).setItem();
         }
     }
 
@@ -79,6 +91,8 @@ public class GameState {
             log.append("A " + enemy.getName() + " lurches out of the gloom!");
         } else if (npc == 4) {
             log.append("Something massive stirs in the dark... not yet.");
+        } else {
+            Loot.collectRoom(currentRoom, player, log);
         }
     }
 
@@ -155,6 +169,7 @@ public class GameState {
     private void onEnemyDefeated() {
         log.append(enemy.getName() + " has died.");
         player.levelModifier(log);
+        Loot.rollKillDrop(player, log);
         int roll = GameRandom.rand.nextInt(2) + 1;
         if (roll == 2) {
             spawnEnemy();
@@ -164,6 +179,7 @@ public class GameState {
             enemy = null;
             mode = Mode.EXPLORE;
             log.append("The room is clear... for now.");
+            Loot.collectRoom(currentRoom, player, log);
         }
     }
 
