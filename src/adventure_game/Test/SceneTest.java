@@ -34,6 +34,6 @@ public class SceneTest {
         assertTrue(gridContains(screen, "Hospital Entrance")); // HUD name
         assertTrue(gridContains(screen, "HP ["));              // HUD bar
         assertTrue(gridContains(screen, "Lv."));               // HUD level
-        assertTrue(gridContains(screen, "Walker shuffles"));   // log line
+        assertTrue(gridContains(screen, "Hospital Entrance."));   // log line
     }
 }

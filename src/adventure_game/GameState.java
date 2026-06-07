@@ -3,17 +3,26 @@ package adventure_game;
 import java.io.FileNotFoundException;
 import java.util.List;
 
+import adventure_game.items.bandage;
+
 /**
- * Phase-1 slice game state: loads the hospital map, holds the player, the
- * current room, one enemy, and the message log, and resolves a single
- * attack exchange. Swing-free.
+ * Game state for the explore-and-fight loop: the hospital rooms, the player,
+ * the current room, the current enemy (if any), a mode, and the message log.
+ * Swing-free. Gameplay logic is ported from reference/GameWindow.java.txt.
  */
 public class GameState {
+
+    public enum Mode { EXPLORE, COMBAT, DEAD }
+
+    private static final int[] REGULAR_ROOMS =
+            {1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18, 20, 21};
+    private static final int[] BOSS_ROOMS = {10, 19, 22, 24};
+
     private Player player;
     private List<Room> rooms;
     private Room currentRoom;
     private NPC enemy;
-    private boolean inCombat;
+    private Mode mode;
     private final MessageLog log = new MessageLog();
 
     public static GameState loadHospital() throws FileNotFoundException {
@@ -21,30 +30,148 @@ public class GameState {
         gs.rooms = HospitalMap.load(HospitalMap.HOSPITAL_PATH);
         gs.currentRoom = gs.rooms.get(0);
         gs.player = new Player("Mick", 150, 0, 75);
-        gs.enemy = new NPC("Walker", 100, 0, 15);
-        gs.inCombat = true;
-        gs.log.append("A Walker shuffles toward you.");
+        gs.mode = Mode.EXPLORE;
+        gs.populateZombies();
+        gs.log.append("You stand at the Hospital Entrance. The cold bites.");
         return gs;
     }
 
-    /** Resolve one attack: player hits enemy; if it survives, it hits back. */
-    public void playerAttack() {
-        if (!inCombat || enemy == null) {
-            return;
+    private void populateZombies() {
+        for (int i : REGULAR_ROOMS) {
+            rooms.get(i).setNPC();
         }
-        player.attack(enemy, log);
-        if (enemy.isAlive()) {
-            enemy.takeTurn(player, log);
-        } else {
-            log.append(enemy.getName() + " has died.");
-            inCombat = false;
+        for (int i : BOSS_ROOMS) {
+            rooms.get(i).setBossNPC();
         }
     }
 
+    // --- navigation ---
+    public boolean move(Direction dir) {
+        if (mode != Mode.EXPLORE) {
+            return false;
+        }
+        Room next = nextRoom(dir);
+        if (next == null) {
+            log.append("You cannot go that way.");
+            return false;
+        }
+        currentRoom = next;
+        log.append("You enter the " + currentRoom.getRoomName() + ".");
+        tryEncounter();
+        return true;
+    }
+
+    private Room nextRoom(Direction dir) {
+        switch (dir) {
+            case NORTH: return currentRoom.isRoomNorthNull() ? null : currentRoom.getNorthRoom();
+            case SOUTH: return currentRoom.isRoomSouthNull() ? null : currentRoom.getSouthRoom();
+            case EAST:  return currentRoom.isRoomEastNull()  ? null : currentRoom.getEastRoom();
+            case WEST:  return currentRoom.isRoomWestNull()  ? null : currentRoom.getWestRoom();
+            default:    return null;
+        }
+    }
+
+    public void tryEncounter() {
+        int npc = currentRoom.hasNPC();
+        if (npc == 1) {
+            spawnEnemy();
+            mode = Mode.COMBAT;
+            log.append("A " + enemy.getName() + " lurches out of the gloom!");
+        } else if (npc == 4) {
+            log.append("Something massive stirs in the dark... not yet.");
+        }
+    }
+
+    private void spawnEnemy() {
+        int t = GameRandom.rand.nextInt(3);
+        int level;
+        if (t == 0) {
+            level = GameRandom.rand.nextInt(11);
+            enemy = new NPC("Walker", 100, level, 15);
+        } else if (t == 1) {
+            level = GameRandom.rand.nextInt(11);
+            enemy = new NPC("Creeper", 250, level, 18);
+        } else {
+            level = GameRandom.rand.nextInt(6);
+            enemy = new NPC("Sprinter", 500, level, 25);
+        }
+        enemy.levelingUp(log);
+    }
+
+    // --- combat verbs (each resolves one exchange) ---
+    public void playerAttack() {
+        if (mode != Mode.COMBAT || enemy == null) {
+            return;
+        }
+        player.attack(enemy, log);
+        if (!enemy.isAlive()) {
+            onEnemyDefeated();
+            return;
+        }
+        enemy.takeTurn(player, log);
+        checkPlayerDeath();
+    }
+
+    public void playerDefend() {
+        if (mode != Mode.COMBAT || enemy == null) {
+            return;
+        }
+        enemy.takeTurn(player, log);
+        player.defend(enemy, log);
+        checkPlayerDeath();
+    }
+
+    public void useBandage() {
+        if (mode != Mode.COMBAT || enemy == null) {
+            return;
+        }
+        if (player.hasItems()) {
+            player.items.get(0).consume(player, log);
+            player.items.remove(0);
+            enemy.takeTurn(player, log);
+            checkPlayerDeath();
+        } else {
+            log.append("You have no bandages to use.");
+        }
+    }
+
+    public void createBandage() {
+        if (mode != Mode.COMBAT || enemy == null) {
+            return;
+        }
+        player.obtain(new bandage(), log);
+        enemy.takeTurn(player, log);
+        checkPlayerDeath();
+    }
+
+    private void checkPlayerDeath() {
+        if (!player.isAlive()) {
+            log.append("You collapse. The hospital claims another survivor.");
+            mode = Mode.DEAD;
+            enemy = null;
+        }
+    }
+
+    private void onEnemyDefeated() {
+        log.append(enemy.getName() + " has died.");
+        player.levelModifier(log);
+        int roll = GameRandom.rand.nextInt(2) + 1;
+        if (roll == 2) {
+            spawnEnemy();
+            log.append("Another zombie lurches out. Fuck.");
+        } else {
+            currentRoom.removeNPC();
+            enemy = null;
+            mode = Mode.EXPLORE;
+            log.append("The room is clear... for now.");
+        }
+    }
+
+    // --- accessors ---
     public Player getPlayer() { return player; }
     public Room getCurrentRoom() { return currentRoom; }
     public NPC getEnemy() { return enemy; }
-    public boolean isInCombat() { return inCombat; }
+    public Mode getMode() { return mode; }
+    public boolean isInCombat() { return mode == Mode.COMBAT; }
     public MessageLog getLog() { return log; }
-
 }
