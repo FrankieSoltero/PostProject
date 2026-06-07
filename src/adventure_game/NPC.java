@@ -1,7 +1,5 @@
 package adventure_game;
 
-import javax.swing.JTextArea;
-
 public class NPC extends Character{
     /**
      * This is the Constructor for NPC and requires parameters name,
@@ -19,7 +17,7 @@ public class NPC extends Character{
      * @param other of type Character
      */
     @Override
-    public void takeTurn(Character other, JTextArea output){
+    public void takeTurn(Character other, MessageLog output){
         if(this.isStunned()){
             this.decreaseTurnsStunned();
             System.out.printf("%S is unable to take any actions this turn!", this.getName());
@@ -34,7 +32,7 @@ public class NPC extends Character{
      * Whenever levelingUpXp is called it levels the player after 3 
      * kills. Modfies damage and health based on what level it is.
      */
-    public void levelingUp(JTextArea output){
+    public void levelingUp(MessageLog output){
         int i;
         for (i = 0; i < this.level; ++i){
             int damageModif = (int) (this.baseDamage * 0.1);

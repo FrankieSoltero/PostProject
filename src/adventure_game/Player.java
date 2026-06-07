@@ -1,7 +1,5 @@
 package adventure_game;
 
-import javax.swing.JTextArea;
-
 public class Player extends Character{
     /**
      * This is the player constructor
@@ -20,7 +18,7 @@ public class Player extends Character{
      * @param other of type Character
      */
     @Override
-    public void takeTurn(Character other, JTextArea output){
+    public void takeTurn(Character other, MessageLog output){
         output.append("Turn Taken");
     }
     @Override
@@ -29,7 +27,7 @@ public class Player extends Character{
      * Whenever levelingUpXp is called it levels the player after 3 
      * kills. Modfies damage and health based on what level it is.
      */
-    public void levelingUp(JTextArea output){
+    public void levelingUp(MessageLog output){
         if (this.level == 1) {
             int damageTotal = (int) (this.baseDamage * (0.1));
             this.modifyDamage(damageTotal);

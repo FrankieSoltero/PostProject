@@ -1,9 +1,8 @@
 package adventure_game.items;
 
-import javax.swing.JTextArea;
-
 import adventure_game.Character;
 import adventure_game.GameRandom;
+import adventure_game.MessageLog;
 
 public class Pistols implements Weapons {
 
@@ -12,7 +11,7 @@ public class Pistols implements Weapons {
      * This method allows an Item to be picked up by a character
      * @param owner of type Character
      */
-    public void pickUpItem(Character owner, JTextArea output) {
+    public void pickUpItem(Character owner, MessageLog output) {
         int level = calculatePistolLevel();
         int damagePoints;
         

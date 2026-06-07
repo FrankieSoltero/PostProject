@@ -1,9 +1,8 @@
 package adventure_game.items;
 
-import javax.swing.JTextArea;
-
 import adventure_game.Character;
 import adventure_game.GameRandom;
+import adventure_game.MessageLog;
 
 public class Knife implements Weapons {
 
@@ -12,7 +11,7 @@ public class Knife implements Weapons {
      * 
      * @param owner of type Character
      */
-    public void pickUpItem(Character owner, JTextArea output){
+    public void pickUpItem(Character owner, MessageLog output){
         int level = calculateKnifeLevel();
         int damagePoints;
         

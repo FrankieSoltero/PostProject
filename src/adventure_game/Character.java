@@ -1,8 +1,6 @@
 package adventure_game;
 import java.util.ArrayList;
 
-import javax.swing.JTextArea;
-
 import adventure_game.items.Consumable;
 
 abstract public class Character{
@@ -114,7 +112,7 @@ abstract public class Character{
      * abstract method required to be defined in subclasses
      * @param other is an NPC in this case
      */
-    abstract void takeTurn(Character other, JTextArea output);
+    abstract void takeTurn(Character other, MessageLog output);
     /**
      * Attacks the other Character
      * if the other is invincible it makes this character unable to attack for
@@ -127,7 +125,7 @@ abstract public class Character{
      * Finally modifies other health to lower it by the damage.
      * @param other of type Character
      */
-    public void attack(Character other, JTextArea output){
+    public void attack(Character other, MessageLog output){
         if(other.isInvincible()){
             output.append(this.name + " is unable to attack!\n");
             other.decreaseTurnsInvincible();
@@ -155,7 +153,7 @@ abstract public class Character{
      * Else the character is set to vulnerable for 1 turn.
      * @param other of type Character
      */
-    public void defend(Character other, JTextArea output){
+    public void defend(Character other, MessageLog output){
         double chance = GameRandom.rand.nextDouble();
         if(chance <=0.75){
             output.append(this.getName() + " blocks " + other.getName() + " attack and is now invincible for 1 turn!\n");
@@ -280,7 +278,7 @@ abstract public class Character{
      * @param item of Consumable
      */
 
-    public void obtain(Consumable item, JTextArea output){
+    public void obtain(Consumable item, MessageLog output){
         if (items.size() >= 10){
             output.append("You can only have 10 items at a time\n");
             
@@ -298,7 +296,7 @@ abstract public class Character{
     public boolean hasItems(){
         return !items.isEmpty();
     }
-    public void levelModifier(JTextArea output){
+    public void levelModifier(MessageLog output){
         this.levelUpXp += 1;
         if (this.levelUpXp == 3){
             this.levelUpXp = 0;
@@ -308,7 +306,7 @@ abstract public class Character{
         
 
     }
-    public abstract void levelingUp(JTextArea output);
+    public abstract void levelingUp(MessageLog output);
 
     
 }

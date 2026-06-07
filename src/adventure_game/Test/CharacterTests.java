@@ -2,7 +2,7 @@ package adventure_game.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import javax.swing.JTextArea;
+import adventure_game.MessageLog;
 
 import org.junit.jupiter.api.Test;
 
@@ -18,7 +18,7 @@ public class CharacterTests{
     private Character c;
     private Character b;
     private Consumable a;
-    private JTextArea output;
+    private MessageLog output = new MessageLog();
     @BeforeEach
     void setup(){
         c = new Player("Hero", 100, 0, 10);
@@ -71,7 +71,7 @@ public class CharacterTests{
     @Test
     void obtainTest() {
         assertFalse(c.hasItems());
-        c.obtain(a, output);
+        c.obtain(new bandage(), output);
         assertTrue(c.hasItems());
     }
     @Test
