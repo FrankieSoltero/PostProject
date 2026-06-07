@@ -45,5 +45,25 @@ public class SceneTest {
         assertTrue(gridContains(screen, "HP ["));
         assertTrue(gridContains(screen, "Lv."));
         assertTrue(gridContains(screen, "Hospital Entrance."));
+        // No enemy banner while exploring.
+        assertFalse(gridContains(screen, "Walker Lv."));
+        assertFalse(gridContains(screen, "Creeper Lv."));
+        assertFalse(gridContains(screen, "Sprinter Lv."));
+    }
+
+    @Test
+    void combatShowsEnemyNameLevelAndHealthBar() throws Exception {
+        adventure_game.GameRandom.rand = new java.util.Random(1);
+        GameState gs = GameState.loadHospital();
+        gs.move(adventure_game.Direction.SOUTH); // Entrance -> Hallway (populated) -> COMBAT
+        Scene scene = buildScene();
+        Screen screen = new Screen(60, 24);
+
+        scene.render(screen, gs, null);
+
+        String name = gs.getEnemy().getName();
+        // Enemy banner shows "<Name> Lv.<n>" and a bracketed health bar with cur/max.
+        assertTrue(gridContains(screen, name + " Lv."));
+        assertTrue(gridContains(screen, "/" + gs.getEnemy().getMaxHealth()));
     }
 }

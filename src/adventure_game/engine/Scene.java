@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import adventure_game.GameState;
+import adventure_game.NPC;
 import adventure_game.Player;
 import adventure_game.Room;
 
@@ -26,6 +27,9 @@ public class Scene {
     private final Map<String, ArtAsset> enemyArt;
     private final ArtAsset enemyFallback;
     private final RoomArt roomArt;
+
+    /** A clean arena drawn behind fights so room art does not clutter combat. */
+    private static final ArtAsset COMBAT_ARENA = buildCombatArena();
 
     public Scene(int width, int height, ArtAsset playerArt,
                  Map<String, ArtAsset> enemyArt, ArtAsset enemyFallback, RoomArt roomArt) {
@@ -56,11 +60,20 @@ public class Scene {
         }
 
         // --- VIEWPORT ---
-        s.blit(roomArt.forRoom(room.getRoomNumber()), 0, VIEW_TOP);
+        boolean fighting = state.isInCombat() && state.getEnemy() != null;
+        ArtAsset backdrop = fighting ? COMBAT_ARENA : roomArt.forRoom(room.getRoomNumber());
+        s.blit(backdrop, 0, VIEW_TOP);
         s.blit(playerArt, PLAYER_X, PLAYER_Y);
-        if (state.isInCombat() && state.getEnemy() != null) {
-            ArtAsset ea = enemyArt.getOrDefault(state.getEnemy().getName(), enemyFallback);
+        if (fighting) {
+            NPC enemy = state.getEnemy();
+            ArtAsset ea = enemyArt.getOrDefault(enemy.getName(), enemyFallback);
             s.blit(ea, ENEMY_X, PLAYER_Y);
+            // Floating enemy health banner above the enemy.
+            int bx = ENEMY_X - 6;
+            s.drawText(bx, VIEW_TOP + 1, enemy.getName() + " Lv." + enemy.getLevel());
+            String ehp = HudComponents.healthBar(enemy.getHealth(), enemy.getMaxHealth(), 12)
+                    + " " + enemy.getHealth() + "/" + enemy.getMaxHealth();
+            s.drawText(bx, VIEW_TOP + 2, ehp);
         }
         if (active != null) {
             s.blit(active.getArt(), PLAYER_X + active.getDx(), STRIKE_Y + active.getDy());
@@ -75,5 +88,21 @@ public class Scene {
         for (int i = 0; i < recent.size(); i++) {
             s.drawText(1, LOG_TOP + 1 + i, "> " + recent.get(i));
         }
+    }
+
+    private static ArtAsset buildCombatArena() {
+        java.util.List<String> lines = new java.util.ArrayList<>();
+        for (int i = 0; i < 13; i++) {
+            lines.add(i == 10 ? repeat('_', 56) : "");
+        }
+        return new ArtAsset(lines);
+    }
+
+    private static String repeat(char c, int n) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < n; i++) {
+            sb.append(c);
+        }
+        return sb.toString();
     }
 }

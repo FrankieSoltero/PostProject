@@ -26,16 +26,18 @@ public final class Animations {
     }
 
     /**
-     * The player's defend: a brace/guard marker flickers just in front of the
-     * player, telegraphing the block before the exchange resolves.
+     * The player's defend: a sizeable shield pulses in front of the player,
+     * clearly telegraphing the block before the exchange resolves.
      */
     public static Animation playerGuard() {
-        ArtAsset guardOpen = ArtAsset.fromLines("(");
-        ArtAsset guardClose = ArtAsset.fromLines("[");
-        java.util.List<AnimationFrame> frames = new java.util.ArrayList<>();
-        frames.add(new AnimationFrame(guardClose, 6, 0, 70));
-        frames.add(new AnimationFrame(guardOpen, 6, 0, 70));
-        frames.add(new AnimationFrame(guardClose, 6, 0, 90));
+        ArtAsset shieldA = ArtAsset.fromLines(" __ ", "(##)", " \\/ ");
+        ArtAsset shieldB = ArtAsset.fromLines(".||.", "<##>", "'||'");
+        List<AnimationFrame> frames = new ArrayList<>();
+        frames.add(new AnimationFrame(shieldA, 7, -1, 80));
+        frames.add(new AnimationFrame(shieldB, 7, -1, 80));
+        frames.add(new AnimationFrame(shieldA, 7, -1, 80));
+        frames.add(new AnimationFrame(shieldB, 7, -1, 80));
+        frames.add(new AnimationFrame(shieldA, 7, -1, 100));
         return new Animation(frames);
     }
 }
