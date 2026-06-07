@@ -29,4 +29,13 @@ public class AnimationTest {
         assertTrue(last.getDx() > first.getDx());      // travels toward the enemy
         assertEquals("*", last.getArt().lines().get(0)); // impact marker
     }
+
+    @Test
+    void playerGuardIsAShortBurst() {
+        adventure_game.engine.Animation a = adventure_game.engine.Animations.playerGuard();
+        assertTrue(a.size() >= 2 && a.size() <= 6);
+        for (adventure_game.engine.AnimationFrame f : a.frames()) {
+            assertTrue(f.getDurationMs() >= 50 && f.getDurationMs() <= 120);
+        }
+    }
 }

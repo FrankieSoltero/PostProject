@@ -24,4 +24,18 @@ public final class Animations {
         frames.add(new AnimationFrame(impact, 34, 0, 90));
         return new Animation(frames);
     }
+
+    /**
+     * The player's defend: a brace/guard marker flickers just in front of the
+     * player, telegraphing the block before the exchange resolves.
+     */
+    public static Animation playerGuard() {
+        ArtAsset guardOpen = ArtAsset.fromLines("(");
+        ArtAsset guardClose = ArtAsset.fromLines("[");
+        java.util.List<AnimationFrame> frames = new java.util.ArrayList<>();
+        frames.add(new AnimationFrame(guardClose, 6, 0, 70));
+        frames.add(new AnimationFrame(guardOpen, 6, 0, 70));
+        frames.add(new AnimationFrame(guardClose, 6, 0, 90));
+        return new Animation(frames);
+    }
 }
