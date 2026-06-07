@@ -48,13 +48,13 @@ public class Scene {
 
         // --- HUD ---
         s.drawText(1, 0, room.getRoomName());
-        String lv = "Lv." + p.getLevel();
-        s.drawText(width - 1 - lv.length(), 0, lv);
+        String topRight = "Lv." + p.getLevel() + "  Bandages:" + p.bandageCount();
+        s.drawText(width - 1 - topRight.length(), 0, topRight);
         String hp = "HP " + HudComponents.healthBar(p.getHealth(), p.getMaxHealth(), 12)
                 + " " + p.getHealth() + "/" + p.getMaxHealth();
         s.drawText(1, 1, hp);
-        String dmg = "DMG " + p.getBaseDamage();
-        s.drawText(width - 1 - dmg.length(), 1, dmg);
+        String botRight = "DMG " + p.getEffectiveDamage() + "  " + p.getWeaponName();
+        s.drawText(width - 1 - botRight.length(), 1, botRight);
         for (int x = 0; x < width; x++) {
             s.put(x, 2, '-');
         }

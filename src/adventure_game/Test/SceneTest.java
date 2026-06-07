@@ -52,6 +52,19 @@ public class SceneTest {
     }
 
     @Test
+    void hudShowsBandageCountWeaponAndEffectiveDamage() throws Exception {
+        GameState gs = GameState.loadHospital();
+        Scene scene = buildScene();
+        Screen screen = new Screen(60, 24);
+
+        scene.render(screen, gs, null);
+
+        assertTrue(gridContains(screen, "Bandages:0")); // none at start
+        assertTrue(gridContains(screen, "Fists"));        // unarmed
+        assertTrue(gridContains(screen, "DMG 75"));       // effective = base 75 + 0
+    }
+
+    @Test
     void combatShowsEnemyNameLevelAndHealthBar() throws Exception {
         adventure_game.GameRandom.rand = new java.util.Random(1);
         GameState gs = GameState.loadHospital();
