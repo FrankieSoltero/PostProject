@@ -72,7 +72,9 @@ public class GameState {
             }
             if (count > 2 && count <= 2 + numberLinesToRead) {
                 line = line.trim();
-                String[] fileInfo = line.split(":");
+                // Limit to 3 so a bio containing ':' (e.g. room 14's
+                // "Your exits: ...") is preserved intact in token 2.
+                String[] fileInfo = line.split(":", 3);
                 int roomNumber = Integer.parseInt(fileInfo[0]);
                 String roomName = fileInfo[1];
                 String roomBio = fileInfo[2];
