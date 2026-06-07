@@ -24,3 +24,12 @@ backdrop), get pulled into encounters with Walkers, Creepers, and Sprinters, and
 fight with Attack / Defend / Create Bandage / Use Bandage while leveling up on
 kills. Bosses, loot, save/load, and the win sequence are deferred to a later
 increment. See `docs/superpowers/specs/2026-06-07-phase2a-explore-and-fight-design.md`.
+
+### Phase 2b-1 — Loot & Weapons
+
+Weapons (Knife / Pistol / AssaultRifle) and bandages are now found in rooms and
+dropped by defeated zombies. You carry one equipped weapon that adds to your
+damage and is swapped when you find a better one; the HUD shows your equipped
+weapon, effective damage, and bandage count. Bosses, the win sequence, and
+save/load are still to come. See
+`docs/superpowers/specs/2026-06-07-phase2b1-loot-and-weapons-design.md`.
