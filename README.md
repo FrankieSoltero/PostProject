@@ -16,3 +16,11 @@ The Phase 1 vertical slice renders one room with the player and one Walker;
 **Attack** plays an animation burst and resolves the hit. See
 `docs/superpowers/specs/2026-06-06-zombie-game-rendering-core-design.md` and
 `docs/superpowers/plans/2026-06-06-rendering-core-vertical-slice.md`.
+
+### Phase 2a — Explore & Fight
+
+You now walk the full 25-room hospital with N/S/E/W (each room has its own
+backdrop), get pulled into encounters with Walkers, Creepers, and Sprinters, and
+fight with Attack / Defend / Create Bandage / Use Bandage while leveling up on
+kills. Bosses, loot, save/load, and the win sequence are deferred to a later
+increment. See `docs/superpowers/specs/2026-06-07-phase2a-explore-and-fight-design.md`.
