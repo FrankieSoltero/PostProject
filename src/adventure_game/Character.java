@@ -316,5 +316,17 @@ abstract public class Character{
     }
     public abstract void levelingUp(MessageLog output);
 
-    
+    /**
+     * Restore persisted vitals exactly (used only by save/load). Sets the fields
+     * directly, bypassing the level-up math.
+     */
+    protected void restoreVitals(int maxHealth, int health, int level, int levelUpXp, int baseDamage) {
+        this.maxHealth = maxHealth;
+        this.health = health;
+        this.level = level;
+        this.levelUpXp = levelUpXp;
+        this.baseDamage = baseDamage;
+    }
+
+
 }

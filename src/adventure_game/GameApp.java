@@ -3,12 +3,15 @@ package adventure_game;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.GridLayout;
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
@@ -26,11 +29,12 @@ import adventure_game.engine.Screen;
 public class GameApp extends JFrame {
     private static final int COLS = 60;
     private static final int ROWS = 24;
+    private static final Path SAVES_DIR = Path.of("saves");
 
     private final RenderPanel panel;
     private final Scene scene;
     private final Screen screen;
-    private final GameState state;
+    private GameState state;
     private final CardLayout cards = new CardLayout();
     private final JPanel south = new JPanel(cards);
 
@@ -76,14 +80,28 @@ public class GameApp extends JFrame {
     }
 
     private JPanel buildExplorePanel() {
-        JPanel p = new JPanel(new GridLayout(2, 3));
+        JPanel p = new JPanel(new GridLayout(3, 3));
         p.add(moveButton("North", Direction.NORTH));
         p.add(moveButton("South", Direction.SOUTH));
         p.add(moveButton("East", Direction.EAST));
         p.add(moveButton("West", Direction.WEST));
-        p.add(actionButton("Create Bandage", state::createBandage, false));
+        p.add(actionButton("Create Bandage", () -> state.createBandage(), false));
+        p.add(simpleButton("Save Game", this::onSave));
+        p.add(simpleButton("Load Game", this::onLoad));
+        p.add(new JLabel());
         p.add(new JLabel());
         return p;
+    }
+
+    private JButton simpleButton(String label, Runnable action) {
+        JButton b = new JButton(label);
+        b.addActionListener(e -> {
+            if (isAnimating()) {
+                return;
+            }
+            action.run();
+        });
+        return b;
     }
 
     private JPanel buildCombatPanel() {
@@ -102,8 +120,8 @@ public class GameApp extends JFrame {
         });
         p.add(attack);
         p.add(defend);
-        p.add(actionButton("Use Bandage", state::useBandage, true));
-        p.add(actionButton("Create Bandage", state::createBandage, true));
+        p.add(actionButton("Use Bandage", () -> state.useBandage(), true));
+        p.add(actionButton("Create Bandage", () -> state.createBandage(), true));
         return p;
     }
 
@@ -117,6 +135,49 @@ public class GameApp extends JFrame {
         JPanel p = new JPanel(new GridLayout(1, 1));
         p.add(new JLabel("  You win! You secured the cure. Close the window to quit.  "));
         return p;
+    }
+
+    private void onSave() {
+        String name = JOptionPane.showInputDialog(this, "Save slot name:");
+        if (name == null) {
+            return; // cancelled
+        }
+        name = name.trim();
+        if (name.isEmpty() || !name.matches("[A-Za-z0-9 _-]+")) {
+            state.getLog().append("Invalid slot name. Use letters, digits, space, - or _.");
+            redraw();
+            return;
+        }
+        try {
+            SaveGame.save(state, SaveGame.slotFile(SAVES_DIR, name));
+            state.getLog().append("Game saved to slot '" + name + "'.");
+        } catch (IOException ex) {
+            state.getLog().append("Save failed: " + ex.getMessage());
+        }
+        redraw();
+    }
+
+    private void onLoad() {
+        try {
+            java.util.List<String> slots = SaveGame.listSlots(SAVES_DIR);
+            if (slots.isEmpty()) {
+                state.getLog().append("No saved games found.");
+                redraw();
+                return;
+            }
+            String choice = (String) JOptionPane.showInputDialog(this, "Load which slot?",
+                    "Load Game", JOptionPane.QUESTION_MESSAGE, null,
+                    slots.toArray(), slots.get(0));
+            if (choice == null) {
+                return; // cancelled
+            }
+            state = SaveGame.load(SaveGame.slotFile(SAVES_DIR, choice));
+            state.getLog().append("Loaded slot '" + choice + "'.");
+            redraw();
+        } catch (IOException ex) {
+            state.getLog().append("Load failed: " + ex.getMessage());
+            redraw();
+        }
     }
 
     private JButton actionButton(String label, Runnable action, boolean combatOnly) {

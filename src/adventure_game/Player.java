@@ -1,5 +1,7 @@
 package adventure_game;
 
+import adventure_game.items.bandage;
+
 public class Player extends Character{
 
     private int weaponBonus = 0;
@@ -42,6 +44,25 @@ public class Player extends Character{
     public String getWeaponName() { return weaponName; }
 
     public int getWeaponBonus() { return weaponBonus; }
+
+    /** Restore the equipped weapon fields directly (used only by save/load). */
+    void restoreWeapon(int bonus, String name) {
+        this.weaponBonus = bonus;
+        this.weaponName = name;
+    }
+
+    /** Rebuild a Player from persisted save fields. */
+    public static Player fromSave(String name, int health, int maxHealth, int level,
+            int levelUpXp, int baseDamage, int weaponBonus, String weaponName,
+            int bandages, MessageLog sink) {
+        Player p = new Player(name, maxHealth, level, baseDamage);
+        p.restoreVitals(maxHealth, health, level, levelUpXp, baseDamage);
+        p.restoreWeapon(weaponBonus, weaponName);
+        for (int i = 0; i < bandages; i++) {
+            p.obtain(new bandage(), sink);
+        }
+        return p;
+    }
 
     /** Number of bandages (consumables) currently carried. */
     public int bandageCount() { return items.size(); }
