@@ -12,7 +12,7 @@ import adventure_game.items.bandage;
  */
 public class GameState {
 
-    public enum Mode { EXPLORE, COMBAT, DEAD }
+    public enum Mode { EXPLORE, COMBAT, DEAD, WON }
 
     private static final int[] REGULAR_ROOMS =
             {1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18, 20, 21};
@@ -34,6 +34,7 @@ public class GameState {
         gs.player = new Player("Mick", 150, 0, 75);
         gs.mode = Mode.EXPLORE;
         gs.populateZombies();
+        gs.rooms.get(24).setRoomCure();
         gs.placeRoomLoot();
         gs.log.append("You stand at the Hospital Entrance. The cold bites.");
         return gs;
@@ -90,7 +91,9 @@ public class GameState {
             mode = Mode.COMBAT;
             log.append("A " + enemy.getName() + " lurches out of the gloom!");
         } else if (npc == 4) {
-            log.append("Something massive stirs in the dark... not yet.");
+            enemy = BossFactory.forRoom(currentRoom.getRoomNumber());
+            mode = Mode.COMBAT;
+            log.append("Something massive blocks your path: " + enemy.getName() + "!");
         } else {
             Loot.collectRoom(currentRoom, player, log);
         }
@@ -168,6 +171,12 @@ public class GameState {
 
     private void onEnemyDefeated() {
         log.append(enemy.getName() + " has died.");
+        if (enemy instanceof Boss) {
+            Mode next = BossEncounter.onDefeat(currentRoom, player, log);
+            enemy = null;
+            mode = next;
+            return;
+        }
         player.levelModifier(log);
         Loot.rollKillDrop(player, log);
         int roll = GameRandom.rand.nextInt(2) + 1;
@@ -186,6 +195,8 @@ public class GameState {
     // --- accessors ---
     public Player getPlayer() { return player; }
     public Room getCurrentRoom() { return currentRoom; }
+    /** Read-only access to a room by its number (== list index). */
+    public Room getRoom(int roomNumber) { return rooms.get(roomNumber); }
     public NPC getEnemy() { return enemy; }
     public Mode getMode() { return mode; }
     public boolean isInCombat() { return mode == Mode.COMBAT; }
