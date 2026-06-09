@@ -12,6 +12,7 @@ public class Boss extends NPC {
     static final double SUMMON_CHIP_FRACTION = 0.5;
     static final int SWARM_HITS = 3;
     static final double SWARM_HIT_FRACTION = 0.5;
+    static final double HEAL_FRACTION = 0.03;
 
     private final Phase[] phases;   // index 0 = phase 1 (gate 1.0), hardest gate last
     private int phaseIndex = 0;
@@ -85,6 +86,12 @@ public class Boss extends NPC {
                     this.attack(other, output);
                 }
                 break;
+            case HEAL: {
+                int heal = (int) Math.ceil(getMaxHealth() * HEAL_FRACTION);
+                this.modifyHealth(heal);
+                output.append(getName() + " regenerates " + heal + " health!");
+                break;
+            }
             case STRIKE:
             default:
                 this.attack(other, output);

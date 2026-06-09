@@ -128,4 +128,31 @@ public class BossTest {
         assertEquals(3, dmgLines, "SWARM = 3 hits");
         assertTrue(target.getHealth() < hpBefore);
     }
+
+    @Test
+    void healRestoresBossHpAndDoesNotAttack() {
+        Player target = new Player("Mick", 100000, 0, 1);
+        MessageLog log = new MessageLog();
+        Boss b = new Boss("Faucci", 20000, 20, 50, new Phase[]{
+            new Phase(1.00, null, new Move[]{Move.HEAL}) });
+        b.modifyHealth(-10000);            // 10000/20000
+        int hpBefore = b.getHealth();
+        int targetBefore = target.getHealth();
+
+        b.takeTurn(target, log);
+
+        assertTrue(b.getHealth() > hpBefore, "HEAL raises boss HP");
+        assertEquals(targetBefore, target.getHealth(), "HEAL turn deals no damage");
+        // ceil(20000 * 0.03) = 600
+        assertEquals(hpBefore + 600, b.getHealth());
+    }
+
+    @Test
+    void healIsClampedToMaxHealth() {
+        Boss b = new Boss("Faucci", 20000, 20, 50, new Phase[]{
+            new Phase(1.00, null, new Move[]{Move.HEAL}) });
+        b.modifyHealth(-100);              // 19900/20000; +600 would overshoot
+        b.takeTurn(new Player("Mick", 100, 0, 1), new MessageLog());
+        assertEquals(20000, b.getHealth());
+    }
 }
