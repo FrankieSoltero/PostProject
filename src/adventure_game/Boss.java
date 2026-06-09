@@ -19,7 +19,7 @@ public class Boss extends NPC {
 
     private final Phase[] phases;   // index 0 = phase 1 (gate 1.0), hardest gate last
     private int phaseIndex = 0;
-    private int turnInFight = 0;
+    private int turnInFight = 0;   // never reset on phase change: patterns continue at turn % len
     private int hordeTurns = 0;
 
     public Boss(String name, int health, int level, int baseDamage, Phase[] phases) {
@@ -41,6 +41,7 @@ public class Boss extends NPC {
     @Override
     public void takeTurn(Character other, MessageLog output) {
         if (this.isStunned()) {
+            // A stunned boss forfeits the whole turn, including any active horde tick.
             this.decreaseTurnsStunned();
             return;
         }
@@ -105,6 +106,8 @@ public class Boss extends NPC {
                 output.append(getName() + " regenerates " + heal + " health!");
                 break;
             }
+            case ENRAGE:
+                throw new IllegalStateException("ENRAGE is an onEnter-only move, not a pattern move");
             case STRIKE:
             default:
                 this.attack(other, output);
