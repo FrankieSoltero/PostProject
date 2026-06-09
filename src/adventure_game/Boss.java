@@ -7,6 +7,8 @@ package adventure_game;
  */
 public class Boss extends NPC {
 
+    static final double SLAM_MULTIPLIER = 1.8;
+
     private final Phase[] phases;   // index 0 = phase 1 (gate 1.0), hardest gate last
     private int phaseIndex = 0;
     private int turnInFight = 0;
@@ -50,6 +52,10 @@ public class Boss extends NPC {
 
     private void executeMove(Move move, Character other, MessageLog output) {
         switch (move) {
+            case SLAM:
+                this.setTempDamageBuff(SLAM_MULTIPLIER);
+                this.attack(other, output);
+                break;
             case STRIKE:
             default:
                 this.attack(other, output);

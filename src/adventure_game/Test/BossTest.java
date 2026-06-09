@@ -60,4 +60,25 @@ public class BossTest {
         b.takeTurn(target, new MessageLog());
         assertTrue(target.getHealth() < before, "STRIKE should deal damage");
     }
+
+    @Test
+    void slamHitsHarderThanStrike() {
+        // Seed shared RNG so STRIKE and SLAM see the same attack modifier.
+        adventure_game.GameRandom.rand = new java.util.Random(42);
+        Player t1 = new Player("A", 100000, 0, 1);
+        Boss striker = new Boss("S", 1000, 5, 100,
+                new Phase[]{ new Phase(1.00, null, new Move[]{Move.STRIKE}) });
+        striker.takeTurn(t1, new MessageLog());
+        int strikeDmg = 100000 - t1.getHealth();
+
+        adventure_game.GameRandom.rand = new java.util.Random(42);
+        Player t2 = new Player("B", 100000, 0, 1);
+        Boss slammer = new Boss("L", 1000, 5, 100,
+                new Phase[]{ new Phase(1.00, null, new Move[]{Move.SLAM}) });
+        slammer.takeTurn(t2, new MessageLog());
+        int slamDmg = 100000 - t2.getHealth();
+
+        assertTrue(slamDmg > strikeDmg, "SLAM (" + slamDmg + ") should exceed STRIKE (" + strikeDmg + ")");
+        assertEquals((int) (strikeDmg * 1.8), slamDmg, 2, "SLAM ~= 1.8x STRIKE");
+    }
 }
