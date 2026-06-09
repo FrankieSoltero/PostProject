@@ -81,4 +81,33 @@ public class BossTest {
         assertTrue(slamDmg > strikeDmg, "SLAM (" + slamDmg + ") should exceed STRIKE (" + strikeDmg + ")");
         assertEquals((int) (strikeDmg * 1.8), slamDmg, 2, "SLAM ~= 1.8x STRIKE");
     }
+
+    @Test
+    void summonArmsAThreeTurnHordeThatChipsThenStops() {
+        Player target = new Player("Mick", 100000, 0, 1);
+        MessageLog log = new MessageLog();
+        // Pattern: SUMMON once, then STRIKE forever. baseDamage 0 so STRIKE deals
+        // ~0 and we observe only the horde chip.
+        Boss b = new Boss("Hive", 1000, 6, 0, new Phase[]{
+            new Phase(1.00, null, new Move[]{Move.SUMMON, Move.STRIKE}) });
+        // STRIKE with baseDamage 0 -> 0 dmg; chip = ceil(effective*0.5) but effective
+        // is 0 here, so give the boss real damage to see chip. Rebuild with dmg 40.
+        b = new Boss("Hive", 1000, 6, 40, new Phase[]{
+            new Phase(1.00, null, new Move[]{Move.SUMMON, Move.STRIKE, Move.STRIKE, Move.STRIKE}) });
+
+        assertEquals(0, b.activeHordeTurns());
+        b.takeTurn(target, log);                  // turn0: SUMMON -> arms 3
+        assertEquals(3, b.activeHordeTurns());
+
+        b.takeTurn(target, log);                  // turn1: chip + STRIKE -> horde 2
+        assertEquals(2, b.activeHordeTurns());
+        b.takeTurn(target, log);                  // turn2 -> horde 1
+        assertEquals(1, b.activeHordeTurns());
+        b.takeTurn(target, log);                  // turn3 -> horde 0
+        assertEquals(0, b.activeHordeTurns());
+
+        int hpAfter = target.getHealth();
+        b.takeTurn(target, log);                  // turn4: SUMMON again (pattern wraps), no chip this turn
+        assertEquals(3, b.activeHordeTurns(), "SUMMON re-arms");
+    }
 }

@@ -8,10 +8,13 @@ package adventure_game;
 public class Boss extends NPC {
 
     static final double SLAM_MULTIPLIER = 1.8;
+    static final int SUMMON_TURNS = 3;
+    static final double SUMMON_CHIP_FRACTION = 0.5;
 
     private final Phase[] phases;   // index 0 = phase 1 (gate 1.0), hardest gate last
     private int phaseIndex = 0;
     private int turnInFight = 0;
+    private int hordeTurns = 0;
 
     public Boss(String name, int health, int level, int baseDamage, Phase[] phases) {
         super(name, health, level, baseDamage);
@@ -20,6 +23,9 @@ public class Boss extends NPC {
         }
         this.phases = phases.clone();
     }
+
+    /** Remaining turns the summoned horde will chip the target. */
+    public int activeHordeTurns() { return hordeTurns; }
 
     /** e.g. "P2/3" for the combat banner. */
     public String getPhaseLabel() {
@@ -33,9 +39,20 @@ public class Boss extends NPC {
             return;
         }
         advancePhaseByHp(output);
+        resolveHorde(other, output);
         Move move = phases[phaseIndex].moveForTurn(turnInFight);
         executeMove(move, other, output);
         turnInFight++;
+    }
+
+    private void resolveHorde(Character other, MessageLog output) {
+        if (hordeTurns > 0) {
+            int chip = (int) Math.ceil(getEffectiveDamage() * SUMMON_CHIP_FRACTION);
+            other.modifyHealth(-chip);
+            hordeTurns--;
+            output.append("The summoned horde gnaws at " + other.getName()
+                    + " for " + chip + " damage.");
+        }
     }
 
     private void advancePhaseByHp(MessageLog output) {
@@ -55,6 +72,10 @@ public class Boss extends NPC {
             case SLAM:
                 this.setTempDamageBuff(SLAM_MULTIPLIER);
                 this.attack(other, output);
+                break;
+            case SUMMON:
+                hordeTurns = SUMMON_TURNS;
+                output.append(getName() + " summons a horde from the dark!");
                 break;
             case STRIKE:
             default:
