@@ -13,6 +13,9 @@ public class Boss extends NPC {
     static final int SWARM_HITS = 3;
     static final double SWARM_HIT_FRACTION = 0.5;
     static final double HEAL_FRACTION = 0.03;
+    static final double ENRAGE_MULTIPLIER = 1.5;
+
+    private boolean enraged = false;
 
     private final Phase[] phases;   // index 0 = phase 1 (gate 1.0), hardest gate last
     private int phaseIndex = 0;
@@ -66,8 +69,17 @@ public class Boss extends NPC {
         }
     }
 
+    @Override
+    public int getEffectiveDamage() {
+        int base = getBaseDamage();
+        return enraged ? (int) (base * ENRAGE_MULTIPLIER) : base;
+    }
+
     private void applyOnEnter(Phase phase, MessageLog output) {
-        // ENRAGE on-enter added in Task 6.
+        if (phase.onEnter() == Move.ENRAGE && !enraged) {
+            enraged = true;
+            output.append(getName() + " ENRAGES! Its blows now land far harder.");
+        }
     }
 
     private void executeMove(Move move, Character other, MessageLog output) {

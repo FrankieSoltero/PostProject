@@ -155,4 +155,22 @@ public class BossTest {
         b.takeTurn(new Player("Mick", 100, 0, 1), new MessageLog());
         assertEquals(20000, b.getHealth());
     }
+
+    @Test
+    void enrageOnEnterPermanentlyRaisesEffectiveDamageOnce() {
+        Player target = new Player("Mick", 100000, 0, 1);
+        MessageLog log = new MessageLog();
+        Boss b = new Boss("RatKing", 1000, 15, 50, new Phase[]{
+            new Phase(1.00, null, new Move[]{Move.STRIKE}),
+            new Phase(0.33, Move.ENRAGE, new Move[]{Move.STRIKE}),
+        });
+
+        assertEquals(50, b.getEffectiveDamage(), "not enraged yet");
+        b.modifyHealth(-800);              // 200/1000 = 20% <= 0.33 -> enter ENRAGE phase
+        b.takeTurn(target, log);
+        assertEquals(75, b.getEffectiveDamage(), "enraged = 50 * 1.5");
+
+        b.takeTurn(target, log);           // still phase 2
+        assertEquals(75, b.getEffectiveDamage(), "ENRAGE fires only once");
+    }
 }
