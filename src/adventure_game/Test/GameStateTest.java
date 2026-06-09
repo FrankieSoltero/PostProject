@@ -95,4 +95,18 @@ public class GameStateTest {
         assertEquals(1, gs.getCurrentRoom().hasWeapon());
         assertEquals(1, gs.getCurrentRoom().hasItem());
     }
+
+    @Test
+    void cureIsPlacedInRoomTwentyFour() throws Exception {
+        GameState gs = GameState.loadHospital();
+        assertTrue(gs.getRoom(24).hasCure(), "Faucci's Lair holds the cure");
+    }
+
+    @Test
+    void bossRoomsAreFlaggedAsBosses() throws Exception {
+        GameState gs = GameState.loadHospital();
+        for (int r : new int[]{10, 19, 22, 24}) {
+            assertEquals(4, gs.getRoom(r).hasNPC(), "room " + r + " is a boss room");
+        }
+    }
 }
