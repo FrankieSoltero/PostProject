@@ -51,7 +51,8 @@ public class GameApp extends JFrame {
         ArtAsset blank = ArtAsset.fromLines("     ", "     ", "     ", "     ", "     ");
         RoomArt roomArt = RoomArt.loadAll(25, "assets/art/rooms", blank);
 
-        scene = new Scene(COLS, ROWS, playerArt, enemyArt, enemyFallback, roomArt);
+        ArtAsset cureArt = ArtAsset.fromLines("(cure)");
+        scene = new Scene(COLS, ROWS, playerArt, enemyArt, enemyFallback, roomArt, cureArt);
         state = GameState.loadHospital();
         panel = new RenderPanel(COLS, ROWS);
 

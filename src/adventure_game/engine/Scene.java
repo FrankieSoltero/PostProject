@@ -28,18 +28,21 @@ public class Scene {
     private final Map<String, ArtAsset> enemyArt;
     private final ArtAsset enemyFallback;
     private final RoomArt roomArt;
+    private final ArtAsset cureArt;
 
     /** A clean arena drawn behind fights so room art does not clutter combat. */
     private static final ArtAsset COMBAT_ARENA = buildCombatArena();
 
     public Scene(int width, int height, ArtAsset playerArt,
-                 Map<String, ArtAsset> enemyArt, ArtAsset enemyFallback, RoomArt roomArt) {
+                 Map<String, ArtAsset> enemyArt, ArtAsset enemyFallback,
+                 RoomArt roomArt, ArtAsset cureArt) {
         this.width = width;
         this.height = height;
         this.playerArt = playerArt;
         this.enemyArt = enemyArt;
         this.enemyFallback = enemyFallback;
         this.roomArt = roomArt;
+        this.cureArt = cureArt;
     }
 
     /** Combat banner: "Name Lv.N", plus "[P2/3]" for bosses. */
@@ -51,8 +54,29 @@ public class Scene {
         return banner;
     }
 
+    /** Victory message + final run stats for the win screen. */
+    public static List<String> winSummary(Player p) {
+        List<String> lines = new java.util.ArrayList<>();
+        lines.add("You secured the cure. Humanity has a chance.");
+        lines.add("");
+        lines.add("Final stats:");
+        lines.add("  Lv." + p.getLevel());
+        lines.add("  DMG " + p.getEffectiveDamage() + "  (" + p.getWeaponName() + ")");
+        lines.add("  HP " + p.getHealth() + "/" + p.getMaxHealth());
+        lines.add("  Bandages " + p.bandageCount());
+        return lines;
+    }
+
     public void render(Screen s, GameState state, AnimationFrame active) {
         s.clear();
+        if (state.getMode() == GameState.Mode.WON) {
+            s.blit(cureArt, Math.max(0, (width - cureArt.width()) / 2), VIEW_TOP);
+            List<String> summary = winSummary(state.getPlayer());
+            for (int i = 0; i < summary.size(); i++) {
+                s.drawText(2, LOG_TOP + 1 + i, summary.get(i));
+            }
+            return;
+        }
         Player p = state.getPlayer();
         Room room = state.getCurrentRoom();
 

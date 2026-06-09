@@ -30,7 +30,8 @@ public class SceneTest {
         Map<String, ArtAsset> enemyArt = new HashMap<>();
         enemyArt.put("Walker", walker);
         RoomArt roomArt = new RoomArt(ArtAsset.fromLines("ROOM-BACKDROP"));
-        return new Scene(60, 24, player, enemyArt, walker, roomArt);
+        ArtAsset cure = ArtAsset.fromLines("CURE");
+        return new Scene(60, 24, player, enemyArt, walker, roomArt, cure);
     }
 
     @Test
@@ -92,5 +93,15 @@ public class SceneTest {
         String banner = Scene.bannerFor(boss);
         assertTrue(banner.startsWith("Faucci Lv.20"), banner);
         assertTrue(banner.contains("[P1/3]"), banner);
+    }
+
+    @Test
+    void winSummaryShowsVictoryLineAndFinalStats() throws Exception {
+        GameState gs = adventure_game.GameState.loadHospital();
+        java.util.List<String> lines = Scene.winSummary(gs.getPlayer());
+        String joined = String.join("\n", lines);
+        assertTrue(joined.contains("secured the cure"), joined);
+        assertTrue(joined.contains("Lv."), joined);
+        assertTrue(joined.contains("DMG"), joined);
     }
 }
