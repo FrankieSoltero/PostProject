@@ -110,4 +110,22 @@ public class BossTest {
         b.takeTurn(target, log);                  // turn4: SUMMON again (pattern wraps), no chip this turn
         assertEquals(3, b.activeHordeTurns(), "SUMMON re-arms");
     }
+
+    @Test
+    void swarmAppliesThreeHitsInOneTurn() {
+        Player target = new Player("Mick", 100000, 0, 1);
+        MessageLog log = new MessageLog();
+        Boss b = new Boss("Nest", 5000, 10, 50, new Phase[]{
+            new Phase(1.00, null, new Move[]{Move.SWARM}) });
+
+        int logBefore = log.size();
+        int hpBefore = target.getHealth();
+        b.takeTurn(target, log);
+
+        // Three "dealt ... damage" lines from three attacks this single turn.
+        long dmgLines = log.lines().stream()
+                .filter(s -> s.contains("dealt") && s.contains("damage to Mick")).count();
+        assertEquals(3, dmgLines, "SWARM = 3 hits");
+        assertTrue(target.getHealth() < hpBefore);
+    }
 }

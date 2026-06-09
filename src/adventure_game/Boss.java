@@ -10,6 +10,8 @@ public class Boss extends NPC {
     static final double SLAM_MULTIPLIER = 1.8;
     static final int SUMMON_TURNS = 3;
     static final double SUMMON_CHIP_FRACTION = 0.5;
+    static final int SWARM_HITS = 3;
+    static final double SWARM_HIT_FRACTION = 0.5;
 
     private final Phase[] phases;   // index 0 = phase 1 (gate 1.0), hardest gate last
     private int phaseIndex = 0;
@@ -76,6 +78,12 @@ public class Boss extends NPC {
             case SUMMON:
                 hordeTurns = SUMMON_TURNS;
                 output.append(getName() + " summons a horde from the dark!");
+                break;
+            case SWARM:
+                for (int i = 0; i < SWARM_HITS; i++) {
+                    this.setTempDamageBuff(SWARM_HIT_FRACTION);
+                    this.attack(other, output);
+                }
                 break;
             case STRIKE:
             default:
