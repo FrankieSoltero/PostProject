@@ -79,4 +79,18 @@ public class SceneTest {
         assertTrue(gridContains(screen, name + " Lv."));
         assertTrue(gridContains(screen, "/" + gs.getEnemy().getMaxHealth()));
     }
+
+    @Test
+    void bannerForRegularEnemyHasNoPhaseIndicator() {
+        adventure_game.NPC walker = new adventure_game.NPC("Walker", 100, 2, 15);
+        assertEquals("Walker Lv.2", Scene.bannerFor(walker));
+    }
+
+    @Test
+    void bannerForBossShowsPhaseIndicator() {
+        adventure_game.Boss boss = adventure_game.BossFactory.forRoom(24);
+        String banner = Scene.bannerFor(boss);
+        assertTrue(banner.startsWith("Faucci Lv.20"), banner);
+        assertTrue(banner.contains("[P1/3]"), banner);
+    }
 }

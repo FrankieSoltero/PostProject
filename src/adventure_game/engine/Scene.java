@@ -3,6 +3,7 @@ package adventure_game.engine;
 import java.util.List;
 import java.util.Map;
 
+import adventure_game.Boss;
 import adventure_game.GameState;
 import adventure_game.NPC;
 import adventure_game.Player;
@@ -41,6 +42,15 @@ public class Scene {
         this.roomArt = roomArt;
     }
 
+    /** Combat banner: "Name Lv.N", plus "[P2/3]" for bosses. */
+    public static String bannerFor(NPC enemy) {
+        String banner = enemy.getName() + " Lv." + enemy.getLevel();
+        if (enemy instanceof Boss) {
+            banner += " [" + ((Boss) enemy).getPhaseLabel() + "]";
+        }
+        return banner;
+    }
+
     public void render(Screen s, GameState state, AnimationFrame active) {
         s.clear();
         Player p = state.getPlayer();
@@ -70,7 +80,7 @@ public class Scene {
             s.blit(ea, ENEMY_X, PLAYER_Y);
             // Floating enemy health banner above the enemy.
             int bx = ENEMY_X - 6;
-            s.drawText(bx, VIEW_TOP + 1, enemy.getName() + " Lv." + enemy.getLevel());
+            s.drawText(bx, VIEW_TOP + 1, bannerFor(enemy));
             String ehp = HudComponents.healthBar(enemy.getHealth(), enemy.getMaxHealth(), 12)
                     + " " + enemy.getHealth() + "/" + enemy.getMaxHealth();
             s.drawText(bx, VIEW_TOP + 2, ehp);
