@@ -192,6 +192,45 @@ public class GameState {
         }
     }
 
+    // --- save / load ---
+    /** Snapshot the current run into a SaveData. */
+    public SaveData toSaveData() {
+        int[][] flags = new int[rooms.size()][4];
+        for (int i = 0; i < rooms.size(); i++) {
+            Room r = rooms.get(i);
+            flags[i][0] = r.hasNPC();
+            flags[i][1] = r.hasWeapon();
+            flags[i][2] = r.hasItem();
+            flags[i][3] = r.hasCure() ? 1 : -1;
+        }
+        return new SaveData(player.getName(), player.getHealth(), player.getMaxHealth(),
+                player.getLevel(), player.getlevelUpXp(), player.getBaseDamage(),
+                player.getWeaponBonus(), player.getWeaponName(), player.bandageCount(),
+                currentRoom.getRoomNumber(), flags);
+    }
+
+    /** Rebuild a fresh map and re-apply a saved run state. */
+    public static GameState fromSave(SaveData s) throws FileNotFoundException {
+        GameState gs = new GameState();
+        gs.rooms = HospitalMap.load(HospitalMap.HOSPITAL_PATH);
+        for (int i = 0; i < gs.rooms.size(); i++) {
+            Room r = gs.rooms.get(i);
+            int[] f = s.roomFlags[i];
+            if (f[0] == 1) { r.setNPC(); } else if (f[0] == 4) { r.setBossNPC(); } else { r.removeNPC(); }
+            if (f[1] == 1) { r.setWeapon(); } else { r.removeWeapon(); }
+            if (f[2] == 1) { r.setItem(); } else { r.removeItem(); }
+            if (f[3] == 1) { r.setRoomCure(); }
+            // a fresh map has hasCure == -1, so no removeCure is needed
+        }
+        gs.player = Player.fromSave(s.playerName, s.health, s.maxHealth, s.level,
+                s.levelUpXp, s.baseDamage, s.weaponBonus, s.weaponName, s.bandages,
+                new MessageLog());
+        gs.currentRoom = gs.rooms.get(s.currentRoom);
+        gs.enemy = null;
+        gs.mode = Mode.EXPLORE;
+        return gs;
+    }
+
     // --- accessors ---
     public Player getPlayer() { return player; }
     public Room getCurrentRoom() { return currentRoom; }
