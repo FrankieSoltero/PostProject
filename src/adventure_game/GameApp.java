@@ -47,11 +47,15 @@ public class GameApp extends JFrame {
         enemyArt.put("Walker", ArtAsset.fromFile("assets/art/walker.txt"));
         enemyArt.put("Creeper", ArtAsset.fromFile("assets/art/creeper.txt"));
         enemyArt.put("Sprinter", ArtAsset.fromFile("assets/art/sprinter.txt"));
+        enemyArt.put("HiveMind", ArtAsset.fromFile("assets/art/hivemind.txt"));
+        enemyArt.put("Zombie Nest", ArtAsset.fromFile("assets/art/zombienest.txt"));
+        enemyArt.put("RatKing", ArtAsset.fromFile("assets/art/ratking.txt"));
+        enemyArt.put("Faucci", ArtAsset.fromFile("assets/art/faucci.txt"));
         ArtAsset enemyFallback = enemyArt.get("Walker");
         ArtAsset blank = ArtAsset.fromLines("     ", "     ", "     ", "     ", "     ");
         RoomArt roomArt = RoomArt.loadAll(25, "assets/art/rooms", blank);
 
-        ArtAsset cureArt = ArtAsset.fromLines("(cure)");
+        ArtAsset cureArt = ArtAsset.fromFile("assets/art/cure.txt");
         scene = new Scene(COLS, ROWS, playerArt, enemyArt, enemyFallback, roomArt, cureArt);
         state = GameState.loadHospital();
         panel = new RenderPanel(COLS, ROWS);
@@ -59,6 +63,7 @@ public class GameApp extends JFrame {
         south.add(buildExplorePanel(), GameState.Mode.EXPLORE.name());
         south.add(buildCombatPanel(), GameState.Mode.COMBAT.name());
         south.add(buildDeadPanel(), GameState.Mode.DEAD.name());
+        south.add(buildWonPanel(), GameState.Mode.WON.name());
 
         getContentPane().setLayout(new BorderLayout());
         getContentPane().add(panel, BorderLayout.CENTER);
@@ -105,6 +110,12 @@ public class GameApp extends JFrame {
     private JPanel buildDeadPanel() {
         JPanel p = new JPanel(new GridLayout(1, 1));
         p.add(new JLabel("  You are dead. Close the window to quit.  "));
+        return p;
+    }
+
+    private JPanel buildWonPanel() {
+        JPanel p = new JPanel(new GridLayout(1, 1));
+        p.add(new JLabel("  You win! You secured the cure. Close the window to quit.  "));
         return p;
     }
 
