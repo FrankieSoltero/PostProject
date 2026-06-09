@@ -89,6 +89,7 @@ public class Boss extends NPC {
                 this.attack(other, output);
                 break;
             case SUMMON:
+                // Re-summoning refreshes the horde window (resets, not stacks).
                 hordeTurns = SUMMON_TURNS;
                 output.append(getName() + " summons a horde from the dark!");
                 break;

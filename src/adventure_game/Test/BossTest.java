@@ -86,13 +86,9 @@ public class BossTest {
     void summonArmsAThreeTurnHordeThatChipsThenStops() {
         Player target = new Player("Mick", 100000, 0, 1);
         MessageLog log = new MessageLog();
-        // Pattern: SUMMON once, then STRIKE forever. baseDamage 0 so STRIKE deals
-        // ~0 and we observe only the horde chip.
-        Boss b = new Boss("Hive", 1000, 6, 0, new Phase[]{
-            new Phase(1.00, null, new Move[]{Move.SUMMON, Move.STRIKE}) });
-        // STRIKE with baseDamage 0 -> 0 dmg; chip = ceil(effective*0.5) but effective
-        // is 0 here, so give the boss real damage to see chip. Rebuild with dmg 40.
-        b = new Boss("Hive", 1000, 6, 40, new Phase[]{
+        // Pattern: SUMMON, then STRIKEs. The horde chip is observed via the turn
+        // counter (activeHordeTurns) rather than HP, so STRIKE damage is irrelevant.
+        Boss b = new Boss("Hive", 1000, 6, 40, new Phase[]{
             new Phase(1.00, null, new Move[]{Move.SUMMON, Move.STRIKE, Move.STRIKE, Move.STRIKE}) });
 
         assertEquals(0, b.activeHordeTurns());
